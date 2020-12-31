@@ -50,6 +50,9 @@ namespace Tsp
         /// </summary>
         Graphics cityGraphics;
 
+        Font drawFont = new Font("Arial", 8);
+        SolidBrush drawBrush = new SolidBrush(Color.Black);
+
         /// <summary>
         /// Delegate for the thread that runs the TSP algorithm.
         /// We use a separate thread so the GUI can redraw as the algorithm runs.
@@ -109,11 +112,12 @@ namespace Tsp
 
             int lastCity = 0;
             int nextCity = e.BestTour[0].Connection1;
-
-            cityGraphics.FillRectangle(Brushes.White, 0, 0, cityImage.Width, cityImage.Height);
+            int city_num = 1;
+            cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
             {
                 // Draw a circle for the city.
+                cityGraphics.DrawString(city_num.ToString(), drawFont, drawBrush, city.Location.X + 3, city.Location.Y + 3);
                 cityGraphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
 
                 // Draw the line connecting the city.
@@ -130,6 +134,7 @@ namespace Tsp
                     lastCity = nextCity;
                     nextCity = e.BestTour[nextCity].Connection2;
                 }
+                city_num += 1;
             }
 
             this.tourDiagram.Image = cityImage;
@@ -151,10 +156,14 @@ namespace Tsp
             Image cityImage = new Bitmap(tourDiagram.Width, tourDiagram.Height);
             Graphics graphics = Graphics.FromImage(cityImage);
 
+            int City_num = 1;
             foreach (City city in cityList)
             {
                 // Draw a circle for the city.
+                
+                graphics.DrawString(City_num.ToString(), drawFont, drawBrush, city.Location.X+3, city.Location.Y+3);
                 graphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
+                City_num += 1;
             }
 
             this.tourDiagram.Image = cityImage;
@@ -364,6 +373,19 @@ namespace Tsp
         private void updateCityCount()
         {
             this.NumberCitiesValue.Text = cityList.Count.ToString();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+           // foreach (object i in cityList)
+            //{
+                for (int j = 0; j < cityList.Count; j++)
+                {
+                    Console.WriteLine(cityList[j].Location);
+                }
+           // }
+
         }
     }
 }
