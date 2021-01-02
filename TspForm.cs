@@ -123,6 +123,12 @@ namespace Tsp
                 // Draw the line connecting the city.
                 cityGraphics.DrawLine(Pens.Black, cityList[lastCity].Location, cityList[nextCity].Location);
 
+                #region Get Cordinates
+
+                    Console.WriteLine(cityList[lastCity].Location + ";" + cityList[nextCity].Location);
+                
+                #endregion
+
                 // figure out if the next city in the list is [0] or [1]
                 if (lastCity != e.BestTour[nextCity].Connection1)
                 {
