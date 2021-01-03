@@ -50,6 +50,7 @@ namespace Tsp
         /// </summary>
         Graphics cityGraphics;
 
+        List<string> Cordinates = new List<string>();
         Font drawFont = new Font("Arial", 8);
         SolidBrush drawBrush = new SolidBrush(Color.Black);
 
@@ -113,6 +114,9 @@ namespace Tsp
             int lastCity = 0;
             int nextCity = e.BestTour[0].Connection1;
             int city_num = 1;
+
+            Cordinates.Clear();
+
             cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
             {
@@ -125,8 +129,8 @@ namespace Tsp
 
                 #region Get Cordinates
 
-                    Console.WriteLine(cityList[lastCity].Location + ";" + cityList[nextCity].Location);
-                
+                Cordinates.Add(cityList[lastCity].Location + ":" + cityList[nextCity].Location);
+
                 #endregion
 
                 // figure out if the next city in the list is [0] or [1]
@@ -386,9 +390,9 @@ namespace Tsp
 
            // foreach (object i in cityList)
             //{
-                for (int j = 0; j < cityList.Count; j++)
+                for (int j = 0; j < Cordinates.Count; j++)
                 {
-                    Console.WriteLine(cityList[j].Location);
+                    Console.WriteLine(Cordinates[j]);
                 }
            // }
 
