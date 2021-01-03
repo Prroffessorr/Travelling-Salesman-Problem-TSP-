@@ -50,7 +50,17 @@ namespace Tsp
         /// </summary>
         Graphics cityGraphics;
 
-        List<string> Cordinates = new List<string>();
+       
+
+        class Cordinates {
+
+            public string x1_y1 { get; set; }
+            public string x2_y2 { get; set; }
+        }
+
+        List<Cordinates> cordinates = new List<Cordinates>();
+
+
         Font drawFont = new Font("Arial", 8);
         SolidBrush drawBrush = new SolidBrush(Color.Black);
 
@@ -115,7 +125,7 @@ namespace Tsp
             int nextCity = e.BestTour[0].Connection1;
             int city_num = 1;
 
-            Cordinates.Clear();
+            cordinates.Clear();
 
             cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
@@ -129,7 +139,11 @@ namespace Tsp
 
                 #region Get Cordinates
 
-                Cordinates.Add(cityList[lastCity].Location + ":" + cityList[nextCity].Location);
+                cordinates.Add(new Cordinates()
+                {
+                    x1_y1 = " X1:" + cityList[lastCity].Location.X + ":" + "Y1:" + cityList[lastCity].Location.Y,
+                    x2_y2 = " X2:" + cityList[nextCity].Location.X + ":" + "Y2:" + cityList[nextCity].Location.Y
+                });
 
                 #endregion
 
@@ -387,12 +401,13 @@ namespace Tsp
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //Cordinates.Find('X1');
 
            // foreach (object i in cityList)
             //{
-                for (int j = 0; j < Cordinates.Count; j++)
+                for (int j = 0; j < cordinates.Count; j++)
                 {
-                    Console.WriteLine(Cordinates[j]);
+                    Console.WriteLine(cordinates[j].x1_y1 + ":" + cordinates[j].x2_y2);
                 }
            // }
 
