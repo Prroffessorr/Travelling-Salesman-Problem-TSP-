@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CityList>
+  <City X="20" Y="20"/>
+  <City X="40" Y="40"/>
+  <City X="60" Y="60"/>
+  <City X="25" Y="50"/>
+  <City X="50" Y="25"/>
+  <City X="40" Y="12"/>
+</CityList>
