@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using System.Globalization;
+using System.Xml;
 
 namespace Tsp
 {
@@ -399,18 +400,30 @@ namespace Tsp
             this.NumberCitiesValue.Text = cityList.Count.ToString();
         }
 
+        #region Create .kml file
+
         private void button1_Click(object sender, EventArgs e)
         {
-            //Cordinates.Find('X1');
+            string filename = "../../Ci.kml";
 
-           // foreach (object i in cityList)
-            //{
-                for (int j = 0; j < cordinates.Count; j++)
-                {
-                    Console.WriteLine(cordinates[j].x1_y1 + ":" + cordinates[j].x2_y2);
-                }
-           // }
+            XmlTextWriter xmlWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+            xmlWriter.Formatting = Formatting.Indented;
+            xmlWriter.WriteStartDocument();
+            xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2");
+
+            xmlWriter.WriteStartElement("LineString");
+          
+            for (int j = 0; j < cordinates.Count; j++)
+            {
+                xmlWriter.WriteStartElement("Cordinate");
+                Console.WriteLine(cordinates[j].x1_y1 + ":" + cordinates[j].x2_y2);
+                xmlWriter.WriteElementString("ID", cordinates[j].x1_y1 + ":" + cordinates[j].x2_y2);
+                xmlWriter.WriteEndElement();
+                
+            }
+            xmlWriter.Close();
 
         }
+        #endregion
     }
 }
