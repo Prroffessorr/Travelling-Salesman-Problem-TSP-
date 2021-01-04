@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using System.Globalization;
+using System.Xml;
 
 namespace Tsp
 {
@@ -141,8 +142,8 @@ namespace Tsp
 
                 cordinates.Add(new Cordinates()
                 {
-                    x1_y1 = " X1:" + cityList[lastCity].Location.X + ":" + "Y1:" + cityList[lastCity].Location.Y,
-                    x2_y2 = " X2:" + cityList[nextCity].Location.X + ":" + "Y2:" + cityList[nextCity].Location.Y
+                    x1_y1 = cityList[lastCity].Location.X + ":" + cityList[lastCity].Location.Y,
+                    x2_y2 = cityList[nextCity].Location.X + ":" + cityList[nextCity].Location.Y
                 });
 
                 #endregion
@@ -399,18 +400,56 @@ namespace Tsp
             this.NumberCitiesValue.Text = cityList.Count.ToString();
         }
 
+        #region Create .kml file
+
         private void button1_Click(object sender, EventArgs e)
         {
-            //Cordinates.Find('X1');
+            string filename = "../../Ci.kml";
 
-           // foreach (object i in cityList)
-            //{
-                for (int j = 0; j < cordinates.Count; j++)
+            XmlTextWriter xmlWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+            xmlWriter.Formatting = Formatting.Indented;
+            xmlWriter.WriteStartDocument();
+            xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2");
+
+            xmlWriter.WriteStartElement("Document");
+
+            xmlWriter.WriteElementString("name", filename);
+
+            string[] First_town;
+            string[] Second_town;
+
+            for (int j = 0; j < cordinates.Count; j++)
+            {
+                First_town = cordinates[j].x1_y1.Split(':');
+                Second_town = cordinates[j].x2_y2.Split(':');
+
+                if (j % 2 == 0)
                 {
-                    Console.WriteLine(cordinates[j].x1_y1 + ":" + cordinates[j].x2_y2);
+                    xmlWriter.WriteStartElement("Placemark");
+                        xmlWriter.WriteStartElement("Point");
+                            xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
+                        xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("Placemark");
+                        xmlWriter.WriteStartElement("Point");
+                            xmlWriter.WriteElementString("coordinates", Second_town[0] + "," + Second_town[1] + ",0");
+                        xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
                 }
-           // }
+
+                    xmlWriter.WriteStartElement("Placemark");
+                        xmlWriter.WriteStartElement("LineString");
+                            xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0"+ "\n" +
+                                                         Second_town[0] + "," + Second_town[1] + ",0");
+                        xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+            }
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.Close();
 
         }
+        #endregion
     }
 }
