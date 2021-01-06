@@ -126,6 +126,9 @@ namespace Tsp
 
                                         }
 
+                                        // Add to the city list integer cordinates
+                                        this.Add(new City(Convert.ToInt32(split_cordinates_longitude[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_latitude[0], CultureInfo.CurrentCulture)));
+
                                         // Add to the city list fraction cordinates
                                         tspform.fraction_cordinates.Add(new TspForm.Fraction_Cordinates()
                                         {
@@ -133,9 +136,6 @@ namespace Tsp
 
                                             fraction_y = split_cordinates_latitude[1]
                                         });
-
-                                        // Add to the city list integer cordinates
-                                        this.Add(new City(Convert.ToInt32(split_cordinates_longitude[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_latitude[0], CultureInfo.CurrentCulture)));
 
                                     }
                                 }

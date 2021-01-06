@@ -241,7 +241,6 @@ namespace Tsp
             this.randomSeedTextBox.Size = new System.Drawing.Size(116, 21);
             this.randomSeedTextBox.TabIndex = 5;
             this.randomSeedTextBox.Text = "0";
-            this.randomSeedTextBox.TextChanged += new System.EventHandler(this.randomSeedTextBox_TextChanged);
             // 
             // randomSeedLabel
             // 
@@ -252,7 +251,6 @@ namespace Tsp
             this.randomSeedLabel.Size = new System.Drawing.Size(87, 13);
             this.randomSeedLabel.TabIndex = 0;
             this.randomSeedLabel.Text = "Random Seed";
-            this.randomSeedLabel.Click += new System.EventHandler(this.randomSeedLabel_Click);
             // 
             // openCityListButton
             // 
@@ -359,7 +357,6 @@ namespace Tsp
             this.CloseCityOddsTextBox.Size = new System.Drawing.Size(116, 21);
             this.CloseCityOddsTextBox.TabIndex = 18;
             this.CloseCityOddsTextBox.Text = "90";
-            this.CloseCityOddsTextBox.TextChanged += new System.EventHandler(this.CloseCityOddsTextBox_TextChanged);
             // 
             // CloseCityOddsLabel
             // 

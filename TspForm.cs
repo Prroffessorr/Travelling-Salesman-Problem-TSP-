@@ -55,8 +55,13 @@ namespace Tsp
         /// Variables for storing integer coordinates.
         /// </summary>
         class Cordinates {
-
+            /// <summary>
+            /// integer cordinates for x
+            /// </summary>
             public string x1_y1 { get; set; }
+            /// <summary>
+            /// integer cordinates for y
+            /// </summary>
             public string x2_y2 { get; set; }
         }
 
@@ -492,21 +497,6 @@ namespace Tsp
 
                 xmlWriter.Close();
             }
-        }
-
-        private void randomSeedTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CloseCityOddsTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void randomSeedLabel_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
