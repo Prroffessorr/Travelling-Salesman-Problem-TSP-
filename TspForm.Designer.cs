@@ -77,7 +77,7 @@ namespace Tsp
             this.Itteration_tour_panel = new System.Windows.Forms.Panel();
             this.Save_kml_file = new System.Windows.Forms.SaveFileDialog();
             this.City_XML_File_name = new System.Windows.Forms.Panel();
-            this.SimpleXML_GoogleKML = new System.Windows.Forms.CheckBox();
+            this.CheckBox_XML_KML = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.tourDiagram)).BeginInit();
             this.Main_split_container.Panel1.SuspendLayout();
             this.Main_split_container.Panel2.SuspendLayout();
@@ -290,7 +290,7 @@ namespace Tsp
             this.selectFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.selectFileButton.Location = new System.Drawing.Point(4, 55);
             this.selectFileButton.Name = "selectFileButton";
-            this.selectFileButton.Size = new System.Drawing.Size(64, 25);
+            this.selectFileButton.Size = new System.Drawing.Size(68, 25);
             this.selectFileButton.TabIndex = 7;
             this.selectFileButton.Text = "Browse";
             this.selectFileButton.UseVisualStyleBackColor = true;
@@ -486,7 +486,7 @@ namespace Tsp
             // City_XML_File_name
             // 
             this.City_XML_File_name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.City_XML_File_name.Controls.Add(this.SimpleXML_GoogleKML);
+            this.City_XML_File_name.Controls.Add(this.CheckBox_XML_KML);
             this.City_XML_File_name.Controls.Add(this.fileNameLabel);
             this.City_XML_File_name.Controls.Add(this.Create_kml);
             this.City_XML_File_name.Controls.Add(this.fileNameTextBox);
@@ -499,15 +499,17 @@ namespace Tsp
             this.City_XML_File_name.Size = new System.Drawing.Size(159, 199);
             this.City_XML_File_name.TabIndex = 1;
             // 
-            // SimpleXML_GoogleKML
+            // CheckBox_XML_KML
             // 
-            this.SimpleXML_GoogleKML.AutoSize = true;
-            this.SimpleXML_GoogleKML.Location = new System.Drawing.Point(70, 60);
-            this.SimpleXML_GoogleKML.Name = "SimpleXML_GoogleKML";
-            this.SimpleXML_GoogleKML.Size = new System.Drawing.Size(88, 17);
-            this.SimpleXML_GoogleKML.TabIndex = 11;
-            this.SimpleXML_GoogleKML.Text = "checkBox1";
-            this.SimpleXML_GoogleKML.UseVisualStyleBackColor = true;
+            this.CheckBox_XML_KML.AutoSize = true;
+            this.CheckBox_XML_KML.Checked = true;
+            this.CheckBox_XML_KML.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_XML_KML.Location = new System.Drawing.Point(78, 60);
+            this.CheckBox_XML_KML.Name = "CheckBox_XML_KML";
+            this.CheckBox_XML_KML.Size = new System.Drawing.Size(75, 17);
+            this.CheckBox_XML_KML.TabIndex = 11;
+            this.CheckBox_XML_KML.Text = "Xml/Kml";
+            this.CheckBox_XML_KML.UseVisualStyleBackColor = true;
             // 
             // TspForm
             // 
@@ -574,7 +576,7 @@ namespace Tsp
         private System.Windows.Forms.SaveFileDialog Save_kml_file;
         private System.Windows.Forms.Panel Itteration_tour_panel;
         private System.Windows.Forms.Panel City_XML_File_name;
-        private System.Windows.Forms.CheckBox SimpleXML_GoogleKML;
+        public System.Windows.Forms.CheckBox CheckBox_XML_KML;
     }
 }
 

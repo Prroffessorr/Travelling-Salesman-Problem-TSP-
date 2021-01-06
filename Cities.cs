@@ -14,7 +14,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Xml;
 namespace Tsp
 {
@@ -24,6 +26,16 @@ namespace Tsp
     /// </summary>
     public class Cities : List<City>
     {
+        /// <summary>
+        /// Finding latitude and longitude to work with kml files
+        /// </summary>
+        static string[] split_cordinates_longitude = null;
+        static string[] split_cordinates_latitude = null;
+        /// <summary>
+        /// Determine the required format
+        /// </summary>
+        TspForm tspform = new TspForm();
+
         /// <summary>
         /// Determine the distances between each city.
         /// </summary>
@@ -61,43 +73,57 @@ namespace Tsp
 
             try
             {
-                //this.Clear();
-
-                //cityDS.ReadXml(fileName);
-
-                //DataRowCollection cities = cityDS.Tables[0].Rows;
-
-                //foreach (DataRow city in cities)
-                //{
-                //this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
-                //}
-
-                XmlDocument xml_doc = new XmlDocument();
-
-                xml_doc.Load(fileName);
-
-                XmlNodeList Main_nodes = xml_doc.GetElementsByTagName("Document");
-
-                foreach (XmlNode First_child in Main_nodes)
+                if (tspform.use_xml_or_kml == true)
                 {
-                   foreach (XmlNode Second_child in First_child.ChildNodes)
+                    this.Clear();
+
+                    cityDS.ReadXml(fileName);
+
+                    DataRowCollection cities = cityDS.Tables[0].Rows;
+
+                    foreach (DataRow city in cities)
                     {
-                        if (Second_child.Name == "Placemark")
+                        this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
+                    }
+                }
+
+                else
+                {
+                    this.Clear();
+
+                    XmlDocument xml_doc = new XmlDocument();
+
+                    xml_doc.Load(fileName);
+
+                    XmlNodeList Main_nodes = xml_doc.GetElementsByTagName("Document");
+
+                    foreach (XmlNode First_child in Main_nodes)
+                    {
+                        foreach (XmlNode Second_child in First_child.ChildNodes)
                         {
-                            foreach (XmlNode Thrid_child in Second_child.ChildNodes)
+                            if (Second_child.Name == "Placemark")
                             {
-                                if (Thrid_child.Name == "LookAt")
+                                foreach (XmlNode Thrid_child in Second_child.ChildNodes)
                                 {
-                                    foreach (XmlNode Fourth_child in Thrid_child.ChildNodes)
+                                    if (Thrid_child.Name == "LookAt")
                                     {
-                                        if (Fourth_child.Name == "longitude")//X
+                                        foreach (XmlNode Fourth_child in Thrid_child.ChildNodes)
                                         {
-                                            Console.WriteLine(Fourth_child.InnerText);
+
+                                            if (Fourth_child.Name == "longitude")//X
+                                            {
+                                                split_cordinates_longitude = Fourth_child.InnerText.Split('.');
+                                                Console.WriteLine(split_cordinates_longitude[1]);
+                                            }
+                                            else if (Fourth_child.Name == "latitude")//Y
+                                            {
+                                                split_cordinates_latitude = Fourth_child.InnerText.Split('.');
+                                                Console.WriteLine(split_cordinates_latitude[1]);
+                                            }
+
                                         }
-                                        if (Fourth_child.Name == "latitude")//Y
-                                        {
-                                            Console.WriteLine(Fourth_child.InnerText);
-                                        }
+
+                                        this.Add(new City(Convert.ToInt32(split_cordinates_longitude[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_latitude[0], CultureInfo.CurrentCulture)));
                                     }
                                 }
                             }
@@ -105,7 +131,7 @@ namespace Tsp
                     }
                 }
             }
-            
+
             finally
             {
                 cityDS.Dispose();
