@@ -77,6 +77,7 @@ namespace Tsp
             this.Itteration_tour_panel = new System.Windows.Forms.Panel();
             this.Save_kml_file = new System.Windows.Forms.SaveFileDialog();
             this.City_XML_File_name = new System.Windows.Forms.Panel();
+            this.CheckBox_XML_KML = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.tourDiagram)).BeginInit();
             this.Main_split_container.Panel1.SuspendLayout();
             this.Main_split_container.Panel2.SuspendLayout();
@@ -240,7 +241,6 @@ namespace Tsp
             this.randomSeedTextBox.Size = new System.Drawing.Size(116, 21);
             this.randomSeedTextBox.TabIndex = 5;
             this.randomSeedTextBox.Text = "0";
-            this.randomSeedTextBox.TextChanged += new System.EventHandler(this.randomSeedTextBox_TextChanged);
             // 
             // randomSeedLabel
             // 
@@ -251,12 +251,11 @@ namespace Tsp
             this.randomSeedLabel.Size = new System.Drawing.Size(87, 13);
             this.randomSeedLabel.TabIndex = 0;
             this.randomSeedLabel.Text = "Random Seed";
-            this.randomSeedLabel.Click += new System.EventHandler(this.randomSeedLabel_Click);
             // 
             // openCityListButton
             // 
             this.openCityListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.openCityListButton.Location = new System.Drawing.Point(32, 84);
+            this.openCityListButton.Location = new System.Drawing.Point(31, 87);
             this.openCityListButton.Name = "openCityListButton";
             this.openCityListButton.Size = new System.Drawing.Size(93, 21);
             this.openCityListButton.TabIndex = 8;
@@ -267,7 +266,7 @@ namespace Tsp
             // clearCityListButton
             // 
             this.clearCityListButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.clearCityListButton.Location = new System.Drawing.Point(31, 113);
+            this.clearCityListButton.Location = new System.Drawing.Point(31, 118);
             this.clearCityListButton.Name = "clearCityListButton";
             this.clearCityListButton.Size = new System.Drawing.Size(94, 21);
             this.clearCityListButton.TabIndex = 9;
@@ -287,9 +286,9 @@ namespace Tsp
             // selectFileButton
             // 
             this.selectFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.selectFileButton.Location = new System.Drawing.Point(32, 55);
+            this.selectFileButton.Location = new System.Drawing.Point(4, 55);
             this.selectFileButton.Name = "selectFileButton";
-            this.selectFileButton.Size = new System.Drawing.Size(93, 23);
+            this.selectFileButton.Size = new System.Drawing.Size(68, 25);
             this.selectFileButton.TabIndex = 7;
             this.selectFileButton.Text = "Browse";
             this.selectFileButton.UseVisualStyleBackColor = true;
@@ -358,7 +357,6 @@ namespace Tsp
             this.CloseCityOddsTextBox.Size = new System.Drawing.Size(116, 21);
             this.CloseCityOddsTextBox.TabIndex = 18;
             this.CloseCityOddsTextBox.Text = "90";
-            this.CloseCityOddsTextBox.TextChanged += new System.EventHandler(this.CloseCityOddsTextBox_TextChanged);
             // 
             // CloseCityOddsLabel
             // 
@@ -442,7 +440,7 @@ namespace Tsp
             // 
             this.Create_kml.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.Create_kml.Enabled = false;
-            this.Create_kml.Location = new System.Drawing.Point(40, 148);
+            this.Create_kml.Location = new System.Drawing.Point(40, 150);
             this.Create_kml.Name = "Create_kml";
             this.Create_kml.Size = new System.Drawing.Size(75, 40);
             this.Create_kml.TabIndex = 10;
@@ -485,6 +483,7 @@ namespace Tsp
             // City_XML_File_name
             // 
             this.City_XML_File_name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.City_XML_File_name.Controls.Add(this.CheckBox_XML_KML);
             this.City_XML_File_name.Controls.Add(this.fileNameLabel);
             this.City_XML_File_name.Controls.Add(this.Create_kml);
             this.City_XML_File_name.Controls.Add(this.fileNameTextBox);
@@ -496,6 +495,18 @@ namespace Tsp
             this.City_XML_File_name.Name = "City_XML_File_name";
             this.City_XML_File_name.Size = new System.Drawing.Size(159, 199);
             this.City_XML_File_name.TabIndex = 1;
+            // 
+            // CheckBox_XML_KML
+            // 
+            this.CheckBox_XML_KML.AutoSize = true;
+            this.CheckBox_XML_KML.Checked = true;
+            this.CheckBox_XML_KML.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_XML_KML.Location = new System.Drawing.Point(78, 60);
+            this.CheckBox_XML_KML.Name = "CheckBox_XML_KML";
+            this.CheckBox_XML_KML.Size = new System.Drawing.Size(75, 17);
+            this.CheckBox_XML_KML.TabIndex = 11;
+            this.CheckBox_XML_KML.Text = "Xml/Kml";
+            this.CheckBox_XML_KML.UseVisualStyleBackColor = true;
             // 
             // TspForm
             // 
@@ -562,6 +573,7 @@ namespace Tsp
         private System.Windows.Forms.SaveFileDialog Save_kml_file;
         private System.Windows.Forms.Panel Itteration_tour_panel;
         private System.Windows.Forms.Panel City_XML_File_name;
+        public System.Windows.Forms.CheckBox CheckBox_XML_KML;
     }
 }
 

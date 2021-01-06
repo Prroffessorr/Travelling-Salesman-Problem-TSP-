@@ -12,13 +12,12 @@
 //          pertaining to distribution of the Program without specific, written prior permission. 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
-using System.IO;
 using System.Globalization;
-
+using System.IO;
+using System.Threading;
+using System.Xml;
 namespace Tsp
 {
     /// <summary>
@@ -27,6 +26,12 @@ namespace Tsp
     /// </summary>
     public class Cities : List<City>
     {
+        /// <summary>
+        /// Finding latitude and longitude to work with kml files
+        /// </summary>
+        static string[] split_cordinates_longitude = null;
+        static string[] split_cordinates_latitude = null;
+
         /// <summary>
         /// Determine the distances between each city.
         /// </summary>
@@ -64,17 +69,82 @@ namespace Tsp
 
             try
             {
-                this.Clear();
+                TspForm tspform = new TspForm();
 
-                cityDS.ReadXml(fileName);
-
-                DataRowCollection cities = cityDS.Tables[0].Rows;
-
-                foreach (DataRow city in cities)
+                if (tspform.use_xml_or_kml == true)
                 {
-                    this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
+                    this.Clear();
+
+                    cityDS.ReadXml(fileName);
+
+                    DataRowCollection cities = cityDS.Tables[0].Rows;
+
+                    foreach (DataRow city in cities)
+                    {
+                        this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
+                    }
+                }
+
+                else
+                {
+                    this.Clear();
+
+                    XmlDocument xml_doc = new XmlDocument();
+
+                    xml_doc.Load(fileName);
+
+                    //Get Main nodes from kml
+
+                    XmlNodeList Main_nodes = xml_doc.GetElementsByTagName("Document");
+
+                    //We go in a loop the path to the tag we need(Document/Placemark/LookAt(longitude and latitude ))
+
+                    foreach (XmlNode First_child in Main_nodes)
+                    {
+                        foreach (XmlNode Second_child in First_child.ChildNodes)
+                        {
+                            if (Second_child.Name == "Placemark")
+                            {
+                                foreach (XmlNode Thrid_child in Second_child.ChildNodes)
+                                {
+                                    if (Thrid_child.Name == "LookAt")
+                                    {
+                                        foreach (XmlNode Fourth_child in Thrid_child.ChildNodes)
+                                        {
+                                            //Get longitude(X) from kml
+                                            if (Fourth_child.Name == "longitude")//X
+                                            {
+                                                split_cordinates_longitude = Fourth_child.InnerText.Split('.');
+                                                Console.WriteLine(split_cordinates_longitude[1]);
+                                            }
+                                            //Get latitude(Y) from kml
+                                            else if (Fourth_child.Name == "latitude")//Y
+                                            {
+                                                split_cordinates_latitude = Fourth_child.InnerText.Split('.');
+                                                Console.WriteLine(split_cordinates_latitude[1]);
+                                            }
+
+                                        }
+
+                                        // Add to the city list integer cordinates
+                                        this.Add(new City(Convert.ToInt32(split_cordinates_longitude[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_latitude[0], CultureInfo.CurrentCulture)));
+
+                                        // Add to the city list fraction cordinates
+                                        tspform.fraction_cordinates.Add(new TspForm.Fraction_Cordinates()
+                                        {
+                                            fraction_x = split_cordinates_longitude[1],
+
+                                            fraction_y = split_cordinates_latitude[1]
+                                        });
+
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
             finally
             {
                 cityDS.Dispose();

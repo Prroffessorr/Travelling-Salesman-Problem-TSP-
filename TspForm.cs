@@ -51,17 +51,51 @@ namespace Tsp
         /// </summary>
         Graphics cityGraphics;
 
-       
-
+        /// <summary>
+        /// Variables for storing integer coordinates.
+        /// </summary>
         class Cordinates {
-
+            /// <summary>
+            /// integer cordinates for x
+            /// </summary>
             public string x1_y1 { get; set; }
+            /// <summary>
+            /// integer cordinates for y
+            /// </summary>
             public string x2_y2 { get; set; }
         }
 
-        List<Cordinates> cordinates = new List<Cordinates>();
+        /// <summary>
+        /// Variables for storing fraction coordinates(using if we work with kml file).
+        /// </summary>
+        public class Fraction_Cordinates
+        {
+            /// <summary>
+            /// fraction cordinates for x
+            /// </summary>
+            public string fraction_x { get; set; }
+            /// <summary>
+            /// fraction cordinates for y
+            /// </summary>
+            public string fraction_y { get; set; }
+        }
+        /// <summary>
+        /// Check what we use xml or kml
+        /// </summary>
+        public bool use_xml_or_kml;
+        /// <summary>
+        /// Variables for storing integer coordinates.
+        /// </summary>
+        List<Cordinates> integer_cordinates = new List<Cordinates>();
 
+        /// <summary>
+        /// Variables for storing the fractional part of coordinates.
+        /// </summary>
+        public List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
 
+        /// <summary>
+        /// Parameters required for drawing numbers
+        /// </summary>
         Font drawFont = new Font("Arial", 8);
         SolidBrush drawBrush = new SolidBrush(Color.Black);
 
@@ -126,7 +160,7 @@ namespace Tsp
             int nextCity = e.BestTour[0].Connection1;
             int city_num = 1;
 
-            cordinates.Clear();
+            integer_cordinates.Clear();
 
             cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
@@ -138,15 +172,13 @@ namespace Tsp
                 // Draw the line connecting the city.
                 cityGraphics.DrawLine(Pens.Black, cityList[lastCity].Location, cityList[nextCity].Location);
 
-                #region Get Cordinates
+                // Get Cordinates
 
-                cordinates.Add(new Cordinates()
+                integer_cordinates.Add(new Cordinates()
                 {
                     x1_y1 = cityList[lastCity].Location.X + ":" + cityList[lastCity].Location.Y,
                     x2_y2 = cityList[nextCity].Location.X + ":" + cityList[nextCity].Location.Y
                 });
-
-                #endregion
 
                 // figure out if the next city in the list is [0] or [1]
                 if (lastCity != e.BestTour[nextCity].Connection1)
@@ -313,7 +345,17 @@ namespace Tsp
         private void selectFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileOpenDialog = new OpenFileDialog();
-            fileOpenDialog.Filter = "XML(*.xml)|*.xml";
+
+            if (CheckBox_XML_KML.Checked == true)
+            {
+                use_xml_or_kml = true;
+                fileOpenDialog.Filter = "XML(*.xml)|*.xml";
+            }
+            else
+            {
+                use_xml_or_kml = false;
+                fileOpenDialog.Filter = "KML(*.kml)|*.kml";
+            }
             fileOpenDialog.InitialDirectory = ".";
             fileOpenDialog.ShowDialog();
             fileNameTextBox.Text = fileOpenDialog.FileName;
@@ -406,7 +448,7 @@ namespace Tsp
        
         private void Create_kml_Click(object sender, EventArgs e)
         {
-            Save_kml_file.FileName = "Best Tour for " + cordinates.Count + " Cities";
+            Save_kml_file.FileName = "Best Tour for " + integer_cordinates.Count + " Cities";
 
             if (Save_kml_file.ShowDialog() == DialogResult.OK)
             {
@@ -424,10 +466,10 @@ namespace Tsp
 
                 string[] Second_town;
 
-                for (int j = 0; j < cordinates.Count; j++)
+                for (int j = 0; j < integer_cordinates.Count; j++)
                 {
-                    First_town = cordinates[j].x1_y1.Split(':');
-                    Second_town = cordinates[j].x2_y2.Split(':');
+                    First_town = integer_cordinates[j].x1_y1.Split(':');
+                    Second_town = integer_cordinates[j].x2_y2.Split(':');
 
                     Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
 
@@ -455,21 +497,6 @@ namespace Tsp
 
                 xmlWriter.Close();
             }
-        }
-
-        private void randomSeedTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CloseCityOddsTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void randomSeedLabel_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
