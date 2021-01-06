@@ -416,6 +416,7 @@ namespace Tsp
             xmlWriter.WriteElementString("name", filename);
 
             string[] First_town;
+            
             string[] Second_town;
 
             for (int j = 0; j < cordinates.Count; j++)
@@ -423,29 +424,29 @@ namespace Tsp
                 First_town = cordinates[j].x1_y1.Split(':');
                 Second_town = cordinates[j].x2_y2.Split(':');
 
-                if (j % 2 == 0)
-                {
-                    xmlWriter.WriteStartElement("Placemark");
-                        xmlWriter.WriteStartElement("Point");
-                            xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
-                        xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndElement();
+                Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
 
-                    xmlWriter.WriteStartElement("Placemark");
-                        xmlWriter.WriteStartElement("Point");
-                            xmlWriter.WriteElementString("coordinates", Second_town[0] + "," + Second_town[1] + ",0");
-                        xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndElement();
-                }
+                #region Записываем города
 
-                    xmlWriter.WriteStartElement("Placemark");
-                        xmlWriter.WriteStartElement("LineString");
-                            xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0"+ "\n" +
-                                                         Second_town[0] + "," + Second_town[1] + ",0");
-                        xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndElement();
+                xmlWriter.WriteStartElement("Placemark");
+                xmlWriter.WriteStartElement("Point");
+                xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
+                #endregion
+
+                #region Записываем путь между ближайшими городами
+
+                xmlWriter.WriteStartElement("Placemark");
+                xmlWriter.WriteStartElement("LineString");
+                xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0" + "\n" +
+                                             Second_town[0] + "," + Second_town[1] + ",0");
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
+                #endregion
             }
-            xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteEndElement();
 
             xmlWriter.Close();
 
