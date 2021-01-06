@@ -82,7 +82,7 @@ namespace Tsp
         /// <summary>
         /// Check what we use xml or kml
         /// </summary>
-        public bool use_xml_or_kml;
+        public static bool use_xml_or_kml=true;
         /// <summary>
         /// Variables for storing integer coordinates.
         /// </summary>
