@@ -4,3 +4,11 @@
 bin/
 
 obj/
+
+Ci.kml
+
+*.kml
+
+Cities — копия.xml
+
+Tsp.csproj

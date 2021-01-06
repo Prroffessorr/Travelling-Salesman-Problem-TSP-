@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using System.Globalization;
+using System.Xml;
 
 namespace Tsp
 {
@@ -49,6 +50,20 @@ namespace Tsp
         /// The graphics object for the image that we draw the tour on.
         /// </summary>
         Graphics cityGraphics;
+
+       
+
+        class Cordinates {
+
+            public string x1_y1 { get; set; }
+            public string x2_y2 { get; set; }
+        }
+
+        List<Cordinates> cordinates = new List<Cordinates>();
+
+
+        Font drawFont = new Font("Arial", 8);
+        SolidBrush drawBrush = new SolidBrush(Color.Black);
 
         /// <summary>
         /// Delegate for the thread that runs the TSP algorithm.
@@ -109,15 +124,29 @@ namespace Tsp
 
             int lastCity = 0;
             int nextCity = e.BestTour[0].Connection1;
+            int city_num = 1;
 
-            cityGraphics.FillRectangle(Brushes.White, 0, 0, cityImage.Width, cityImage.Height);
+            cordinates.Clear();
+
+            cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
             {
                 // Draw a circle for the city.
+                cityGraphics.DrawString(city_num.ToString(), drawFont, drawBrush, city.Location.X + 3, city.Location.Y + 3);
                 cityGraphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
 
                 // Draw the line connecting the city.
                 cityGraphics.DrawLine(Pens.Black, cityList[lastCity].Location, cityList[nextCity].Location);
+
+                #region Get Cordinates
+
+                cordinates.Add(new Cordinates()
+                {
+                    x1_y1 = cityList[lastCity].Location.X + ":" + cityList[lastCity].Location.Y,
+                    x2_y2 = cityList[nextCity].Location.X + ":" + cityList[nextCity].Location.Y
+                });
+
+                #endregion
 
                 // figure out if the next city in the list is [0] or [1]
                 if (lastCity != e.BestTour[nextCity].Connection1)
@@ -130,6 +159,7 @@ namespace Tsp
                     lastCity = nextCity;
                     nextCity = e.BestTour[nextCity].Connection2;
                 }
+                city_num += 1;
             }
 
             this.tourDiagram.Image = cityImage;
@@ -151,10 +181,14 @@ namespace Tsp
             Image cityImage = new Bitmap(tourDiagram.Width, tourDiagram.Height);
             Graphics graphics = Graphics.FromImage(cityImage);
 
+            int City_num = 1;
             foreach (City city in cityList)
             {
                 // Draw a circle for the city.
+                
+                graphics.DrawString(City_num.ToString(), drawFont, drawBrush, city.Location.X+3, city.Location.Y+3);
                 graphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
+                City_num += 1;
             }
 
             this.tourDiagram.Image = cityImage;
@@ -364,6 +398,63 @@ namespace Tsp
         private void updateCityCount()
         {
             this.NumberCitiesValue.Text = cityList.Count.ToString();
+        }
+
+        /// <summary>
+        /// Create .kml file
+        /// </summary>
+       
+        private void Create_kml_Click(object sender, EventArgs e)
+        {
+            Save_kml_file.FileName = "Best Tour for " + cordinates.Count + " Cities";
+
+            if (Save_kml_file.ShowDialog() == DialogResult.OK)
+            {
+
+                XmlTextWriter xmlWriter = new XmlTextWriter(Save_kml_file.FileName, System.Text.Encoding.UTF8);
+                xmlWriter.Formatting = Formatting.Indented;
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2");
+
+                xmlWriter.WriteStartElement("Document");
+
+                xmlWriter.WriteElementString("name", Path.GetFileName(Save_kml_file.FileName));
+
+                string[] First_town;
+
+                string[] Second_town;
+
+                for (int j = 0; j < cordinates.Count; j++)
+                {
+                    First_town = cordinates[j].x1_y1.Split(':');
+                    Second_town = cordinates[j].x2_y2.Split(':');
+
+                    Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
+
+                    #region Write next city to kml file
+
+                    xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteStartElement("Point");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
+                    xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+                    #endregion
+
+                    #region Write shortest tour betwen First and Second cities in loop
+
+                    xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteStartElement("LineString");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0" + "\n" +
+                                                 Second_town[0] + "," + Second_town[1] + ",0");
+                    xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+                    #endregion
+                }
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.Close();
+            }
         }
     }
 }

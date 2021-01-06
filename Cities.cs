@@ -72,7 +72,7 @@ namespace Tsp
 
                 foreach (DataRow city in cities)
                 {
-                    this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture)*4, Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)*3 ));
+                    this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
                 }
             }
             finally
