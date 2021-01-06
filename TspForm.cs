@@ -313,7 +313,7 @@ namespace Tsp
         private void selectFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileOpenDialog = new OpenFileDialog();
-            fileOpenDialog.Filter = "XML(*.xml)|*.xml";
+            fileOpenDialog.Filter = "XML(*.xml)|*.xml|KML(*.kml)|*.kml";
             fileOpenDialog.InitialDirectory = ".";
             fileOpenDialog.ShowDialog();
             fileNameTextBox.Text = fileOpenDialog.FileName;

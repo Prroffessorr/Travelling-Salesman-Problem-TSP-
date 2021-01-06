@@ -12,13 +12,10 @@
 //          pertaining to distribution of the Program without specific, written prior permission. 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
 using System.IO;
-using System.Globalization;
-
+using System.Xml;
 namespace Tsp
 {
     /// <summary>
@@ -64,17 +61,51 @@ namespace Tsp
 
             try
             {
-                this.Clear();
+                //this.Clear();
 
-                cityDS.ReadXml(fileName);
+                //cityDS.ReadXml(fileName);
 
-                DataRowCollection cities = cityDS.Tables[0].Rows;
+                //DataRowCollection cities = cityDS.Tables[0].Rows;
 
-                foreach (DataRow city in cities)
+                //foreach (DataRow city in cities)
+                //{
+                //this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
+                //}
+
+                XmlDocument xml_doc = new XmlDocument();
+
+                xml_doc.Load(fileName);
+
+                XmlNodeList Main_nodes = xml_doc.GetElementsByTagName("Document");
+
+                foreach (XmlNode First_child in Main_nodes)
                 {
-                    this.Add(new City(Convert.ToInt32(city["X"], CultureInfo.CurrentCulture), Convert.ToInt32(city["Y"], CultureInfo.CurrentCulture)));
+                   foreach (XmlNode Second_child in First_child.ChildNodes)
+                    {
+                        if (Second_child.Name == "Placemark")
+                        {
+                            foreach (XmlNode Thrid_child in Second_child.ChildNodes)
+                            {
+                                if (Thrid_child.Name == "LookAt")
+                                {
+                                    foreach (XmlNode Fourth_child in Thrid_child.ChildNodes)
+                                    {
+                                        if (Fourth_child.Name == "longitude")//X
+                                        {
+                                            Console.WriteLine(Fourth_child.InnerText);
+                                        }
+                                        if (Fourth_child.Name == "latitude")//Y
+                                        {
+                                            Console.WriteLine(Fourth_child.InnerText);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            
             finally
             {
                 cityDS.Dispose();
