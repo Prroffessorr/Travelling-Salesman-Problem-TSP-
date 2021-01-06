@@ -31,10 +31,6 @@ namespace Tsp
         /// </summary>
         static string[] split_cordinates_longitude = null;
         static string[] split_cordinates_latitude = null;
-        /// <summary>
-        /// Determine the required format
-        /// </summary>
-        TspForm tspform = new TspForm();
 
         /// <summary>
         /// Determine the distances between each city.
@@ -73,6 +69,8 @@ namespace Tsp
 
             try
             {
+                TspForm tspform = new TspForm();
+
                 if (tspform.use_xml_or_kml == true)
                 {
                     this.Clear();
@@ -95,7 +93,11 @@ namespace Tsp
 
                     xml_doc.Load(fileName);
 
+                    //Get Main nodes from kml
+
                     XmlNodeList Main_nodes = xml_doc.GetElementsByTagName("Document");
+
+                    //We go in a loop the path to the tag we need(Document/Placemark/LookAt(longitude and latitude ))
 
                     foreach (XmlNode First_child in Main_nodes)
                     {
@@ -109,12 +111,13 @@ namespace Tsp
                                     {
                                         foreach (XmlNode Fourth_child in Thrid_child.ChildNodes)
                                         {
-
+                                            //Get longitude(X) from kml
                                             if (Fourth_child.Name == "longitude")//X
                                             {
                                                 split_cordinates_longitude = Fourth_child.InnerText.Split('.');
                                                 Console.WriteLine(split_cordinates_longitude[1]);
                                             }
+                                            //Get latitude(Y) from kml
                                             else if (Fourth_child.Name == "latitude")//Y
                                             {
                                                 split_cordinates_latitude = Fourth_child.InnerText.Split('.');
@@ -123,7 +126,17 @@ namespace Tsp
 
                                         }
 
+                                        // Add to the city list fraction cordinates
+                                        tspform.fraction_cordinates.Add(new TspForm.Fraction_Cordinates()
+                                        {
+                                            fraction_x = split_cordinates_longitude[1],
+
+                                            fraction_y = split_cordinates_latitude[1]
+                                        });
+
+                                        // Add to the city list integer cordinates
                                         this.Add(new City(Convert.ToInt32(split_cordinates_longitude[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_latitude[0], CultureInfo.CurrentCulture)));
+
                                     }
                                 }
                             }

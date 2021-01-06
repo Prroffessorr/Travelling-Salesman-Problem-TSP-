@@ -59,6 +59,21 @@ namespace Tsp
             public string x1_y1 { get; set; }
             public string x2_y2 { get; set; }
         }
+
+        /// <summary>
+        /// Variables for storing fraction coordinates(using if we work with kml file).
+        /// </summary>
+        public class Fraction_Cordinates
+        {
+            /// <summary>
+            /// fraction cordinates for x
+            /// </summary>
+            public string fraction_x { get; set; }
+            /// <summary>
+            /// fraction cordinates for y
+            /// </summary>
+            public string fraction_y { get; set; }
+        }
         /// <summary>
         /// Check what we use xml or kml
         /// </summary>
@@ -71,7 +86,7 @@ namespace Tsp
         /// <summary>
         /// Variables for storing the fractional part of coordinates.
         /// </summary>
-        public List<int> fraction_cordinates = new List<int>();
+        public List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
 
         /// <summary>
         /// Parameters required for drawing numbers
