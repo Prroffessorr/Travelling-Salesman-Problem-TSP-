@@ -456,5 +456,20 @@ namespace Tsp
                 xmlWriter.Close();
             }
         }
+
+        private void randomSeedTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CloseCityOddsTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void randomSeedLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
