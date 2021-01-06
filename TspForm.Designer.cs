@@ -72,12 +72,12 @@ namespace Tsp
             this.Main_split_container = new System.Windows.Forms.SplitContainer();
             this.PictureBox_PanellTool = new System.Windows.Forms.SplitContainer();
             this.Settings_panel = new System.Windows.Forms.Panel();
+            this.City_XML_File_name = new System.Windows.Forms.Panel();
+            this.CheckBox_XML_KML = new System.Windows.Forms.CheckBox();
             this.Create_kml = new System.Windows.Forms.Button();
             this.Start_button_panel = new System.Windows.Forms.Panel();
             this.Itteration_tour_panel = new System.Windows.Forms.Panel();
             this.Save_kml_file = new System.Windows.Forms.SaveFileDialog();
-            this.City_XML_File_name = new System.Windows.Forms.Panel();
-            this.CheckBox_XML_KML = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.tourDiagram)).BeginInit();
             this.Main_split_container.Panel1.SuspendLayout();
             this.Main_split_container.Panel2.SuspendLayout();
@@ -86,9 +86,9 @@ namespace Tsp
             this.PictureBox_PanellTool.Panel2.SuspendLayout();
             this.PictureBox_PanellTool.SuspendLayout();
             this.Settings_panel.SuspendLayout();
+            this.City_XML_File_name.SuspendLayout();
             this.Start_button_panel.SuspendLayout();
             this.Itteration_tour_panel.SuspendLayout();
-            this.City_XML_File_name.SuspendLayout();
             this.SuspendLayout();
             // 
             // tourDiagram
@@ -98,7 +98,7 @@ namespace Tsp
             this.tourDiagram.Location = new System.Drawing.Point(0, 0);
             this.tourDiagram.Margin = new System.Windows.Forms.Padding(10);
             this.tourDiagram.Name = "tourDiagram";
-            this.tourDiagram.Size = new System.Drawing.Size(584, 559);
+            this.tourDiagram.Size = new System.Drawing.Size(585, 559);
             this.tourDiagram.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.tourDiagram.TabIndex = 0;
             this.tourDiagram.TabStop = false;
@@ -170,7 +170,7 @@ namespace Tsp
             this.StartButton.Location = new System.Drawing.Point(34, 14);
             this.StartButton.Margin = new System.Windows.Forms.Padding(5);
             this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(97, 47);
+            this.StartButton.Size = new System.Drawing.Size(96, 47);
             this.StartButton.TabIndex = 10;
             this.StartButton.Text = "Start";
             this.StartButton.UseVisualStyleBackColor = true;
@@ -409,7 +409,7 @@ namespace Tsp
             this.PictureBox_PanellTool.Panel2.Controls.Add(this.Start_button_panel);
             this.PictureBox_PanellTool.Panel2MinSize = 135;
             this.PictureBox_PanellTool.Size = new System.Drawing.Size(754, 563);
-            this.PictureBox_PanellTool.SplitterDistance = 588;
+            this.PictureBox_PanellTool.SplitterDistance = 589;
             this.PictureBox_PanellTool.SplitterWidth = 3;
             this.PictureBox_PanellTool.TabIndex = 19;
             // 
@@ -433,8 +433,36 @@ namespace Tsp
             this.Settings_panel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.Settings_panel.Location = new System.Drawing.Point(0, -2);
             this.Settings_panel.Name = "Settings_panel";
-            this.Settings_panel.Size = new System.Drawing.Size(159, 290);
+            this.Settings_panel.Size = new System.Drawing.Size(158, 290);
             this.Settings_panel.TabIndex = 1;
+            // 
+            // City_XML_File_name
+            // 
+            this.City_XML_File_name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.City_XML_File_name.Controls.Add(this.CheckBox_XML_KML);
+            this.City_XML_File_name.Controls.Add(this.fileNameLabel);
+            this.City_XML_File_name.Controls.Add(this.Create_kml);
+            this.City_XML_File_name.Controls.Add(this.fileNameTextBox);
+            this.City_XML_File_name.Controls.Add(this.selectFileButton);
+            this.City_XML_File_name.Controls.Add(this.openCityListButton);
+            this.City_XML_File_name.Controls.Add(this.clearCityListButton);
+            this.City_XML_File_name.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.City_XML_File_name.Location = new System.Drawing.Point(0, 288);
+            this.City_XML_File_name.Name = "City_XML_File_name";
+            this.City_XML_File_name.Size = new System.Drawing.Size(158, 199);
+            this.City_XML_File_name.TabIndex = 1;
+            // 
+            // CheckBox_XML_KML
+            // 
+            this.CheckBox_XML_KML.AutoSize = true;
+            this.CheckBox_XML_KML.Checked = true;
+            this.CheckBox_XML_KML.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBox_XML_KML.Location = new System.Drawing.Point(78, 60);
+            this.CheckBox_XML_KML.Name = "CheckBox_XML_KML";
+            this.CheckBox_XML_KML.Size = new System.Drawing.Size(75, 17);
+            this.CheckBox_XML_KML.TabIndex = 11;
+            this.CheckBox_XML_KML.Text = "Xml/Kml";
+            this.CheckBox_XML_KML.UseVisualStyleBackColor = true;
             // 
             // Create_kml
             // 
@@ -455,7 +483,7 @@ namespace Tsp
             this.Start_button_panel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.Start_button_panel.Location = new System.Drawing.Point(0, 487);
             this.Start_button_panel.Name = "Start_button_panel";
-            this.Start_button_panel.Size = new System.Drawing.Size(159, 72);
+            this.Start_button_panel.Size = new System.Drawing.Size(158, 72);
             this.Start_button_panel.TabIndex = 2;
             // 
             // Itteration_tour_panel
@@ -480,34 +508,6 @@ namespace Tsp
             this.Save_kml_file.Filter = "KML file (* .kml) | * .kml";
             this.Save_kml_file.FilterIndex = 2;
             // 
-            // City_XML_File_name
-            // 
-            this.City_XML_File_name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.City_XML_File_name.Controls.Add(this.CheckBox_XML_KML);
-            this.City_XML_File_name.Controls.Add(this.fileNameLabel);
-            this.City_XML_File_name.Controls.Add(this.Create_kml);
-            this.City_XML_File_name.Controls.Add(this.fileNameTextBox);
-            this.City_XML_File_name.Controls.Add(this.selectFileButton);
-            this.City_XML_File_name.Controls.Add(this.openCityListButton);
-            this.City_XML_File_name.Controls.Add(this.clearCityListButton);
-            this.City_XML_File_name.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.City_XML_File_name.Location = new System.Drawing.Point(0, 288);
-            this.City_XML_File_name.Name = "City_XML_File_name";
-            this.City_XML_File_name.Size = new System.Drawing.Size(159, 199);
-            this.City_XML_File_name.TabIndex = 1;
-            // 
-            // CheckBox_XML_KML
-            // 
-            this.CheckBox_XML_KML.AutoSize = true;
-            this.CheckBox_XML_KML.Checked = true;
-            this.CheckBox_XML_KML.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckBox_XML_KML.Location = new System.Drawing.Point(78, 60);
-            this.CheckBox_XML_KML.Name = "CheckBox_XML_KML";
-            this.CheckBox_XML_KML.Size = new System.Drawing.Size(75, 17);
-            this.CheckBox_XML_KML.TabIndex = 11;
-            this.CheckBox_XML_KML.Text = "Xml/Kml";
-            this.CheckBox_XML_KML.UseVisualStyleBackColor = true;
-            // 
             // TspForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
@@ -526,11 +526,11 @@ namespace Tsp
             this.PictureBox_PanellTool.ResumeLayout(false);
             this.Settings_panel.ResumeLayout(false);
             this.Settings_panel.PerformLayout();
+            this.City_XML_File_name.ResumeLayout(false);
+            this.City_XML_File_name.PerformLayout();
             this.Start_button_panel.ResumeLayout(false);
             this.Itteration_tour_panel.ResumeLayout(false);
             this.Itteration_tour_panel.PerformLayout();
-            this.City_XML_File_name.ResumeLayout(false);
-            this.City_XML_File_name.PerformLayout();
             this.ResumeLayout(false);
 
         }
