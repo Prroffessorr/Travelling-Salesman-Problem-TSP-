@@ -400,57 +400,61 @@ namespace Tsp
             this.NumberCitiesValue.Text = cityList.Count.ToString();
         }
 
-        #region Create .kml file
-
-        private void button1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Create .kml file
+        /// </summary>
+       
+        private void Create_kml_Click(object sender, EventArgs e)
         {
-            string filename = "../../Ci.kml";
+            Save_kml_file.FileName = "Best Tour for " + cordinates.Count + " Cities";
 
-            XmlTextWriter xmlWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
-            xmlWriter.Formatting = Formatting.Indented;
-            xmlWriter.WriteStartDocument();
-            xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2");
-
-            xmlWriter.WriteStartElement("Document");
-
-            xmlWriter.WriteElementString("name", filename);
-
-            string[] First_town;
-            
-            string[] Second_town;
-
-            for (int j = 0; j < cordinates.Count; j++)
+            if (Save_kml_file.ShowDialog() == DialogResult.OK)
             {
-                First_town = cordinates[j].x1_y1.Split(':');
-                Second_town = cordinates[j].x2_y2.Split(':');
 
-                Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
+                XmlTextWriter xmlWriter = new XmlTextWriter(Save_kml_file.FileName, System.Text.Encoding.UTF8);
+                xmlWriter.Formatting = Formatting.Indented;
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2");
 
-                #region Записываем города
+                xmlWriter.WriteStartElement("Document");
 
-                xmlWriter.WriteStartElement("Placemark");
-                xmlWriter.WriteStartElement("Point");
-                xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
+                xmlWriter.WriteElementString("name", Path.GetFileName(Save_kml_file.FileName));
+
+                string[] First_town;
+
+                string[] Second_town;
+
+                for (int j = 0; j < cordinates.Count; j++)
+                {
+                    First_town = cordinates[j].x1_y1.Split(':');
+                    Second_town = cordinates[j].x2_y2.Split(':');
+
+                    Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
+
+                    #region Write next city to kml file
+
+                    xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteStartElement("Point");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
+                    xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+                    #endregion
+
+                    #region Write shortest tour betwen First and Second cities in loop
+
+                    xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteStartElement("LineString");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0" + "\n" +
+                                                 Second_town[0] + "," + Second_town[1] + ",0");
+                    xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+                    #endregion
+                }
+
                 xmlWriter.WriteEndElement();
-                xmlWriter.WriteEndElement();
-                #endregion
 
-                #region Записываем путь между ближайшими городами
-
-                xmlWriter.WriteStartElement("Placemark");
-                xmlWriter.WriteStartElement("LineString");
-                xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0" + "\n" +
-                                             Second_town[0] + "," + Second_town[1] + ",0");
-                xmlWriter.WriteEndElement();
-                xmlWriter.WriteEndElement();
-                #endregion
+                xmlWriter.Close();
             }
-
-                xmlWriter.WriteEndElement();
-
-            xmlWriter.Close();
-
         }
-        #endregion
     }
 }

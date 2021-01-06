@@ -6,3 +6,9 @@ bin/
 obj/
 
 Ci.kml
+
+Cities — копия.xml
+
+*.kml
+
+*.csproj
