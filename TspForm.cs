@@ -473,16 +473,15 @@ namespace Tsp
 
                     Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
 
-                    #region Write next city to kml file
+                    // Write next city to kml file
 
                     xmlWriter.WriteStartElement("Placemark");
                     xmlWriter.WriteStartElement("Point");
                     xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndElement();
-                    #endregion
 
-                    #region Write shortest tour betwen First and Second cities in loop
+                    // Write shortest tour betwen First and Second cities in loop
 
                     xmlWriter.WriteStartElement("Placemark");
                     xmlWriter.WriteStartElement("LineString");
@@ -490,7 +489,7 @@ namespace Tsp
                                                  Second_town[0] + "," + Second_town[1] + ",0");
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndElement();
-                    #endregion
+                    
                 }
 
                 xmlWriter.WriteEndElement();
