@@ -54,6 +54,7 @@ namespace Tsp
         /// </summary>
         Population population;
 
+        public static int generation;
         /// <summary>
         /// Private copy of a flag that will stop the TSP from calculating any more generations.
         /// </summary>
@@ -72,7 +73,6 @@ namespace Tsp
                 halt = value;
             }
         }
-
         /// <summary>
         /// Default Constructor
         /// </summary>
@@ -103,9 +103,28 @@ namespace Tsp
             displayTour(population.BestTour, 0, false);
 
             bool foundNewBestTour = false;
-            int generation;
+
+            TspForm tspform = new TspForm();
+
+            int ItterForStop = 0;
+
             for (generation = 0; generation < maxGenerations; generation++)
             {
+                if (TspForm.itteration >= maxGenerations/100)
+                {
+                    double stop_work = TspForm.itteration - generation/1.4;
+
+                    if (stop_work <= 0)
+                    {
+                        ItterForStop += 1;
+                    }
+                }
+               
+                if (ItterForStop == 9)
+                {
+                    Halt = true;
+                }
+
                 if (Halt)
                 {
                     break;  // GUI has requested we exit.
