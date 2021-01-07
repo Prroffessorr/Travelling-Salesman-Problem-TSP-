@@ -126,8 +126,8 @@ namespace Tsp
                                                         // 28600940737578
                                                         split_cordinates_y = split_cordinates_all[1].Split('.');
 
-                                                        Console.WriteLine(split_cordinates_x[0] + "." + split_cordinates_x[1] +
-                                                            "," + split_cordinates_y[0] + "." + split_cordinates_y[1]);
+                                                        //Console.WriteLine(split_cordinates_x[0] + "." + split_cordinates_x[1] +
+                                                            //"," + split_cordinates_y[0] + "." + split_cordinates_y[1]);
                                                     }
                                                 }
                                                 // Add to the city list integer cordinates
