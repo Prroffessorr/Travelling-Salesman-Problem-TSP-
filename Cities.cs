@@ -71,7 +71,7 @@ namespace Tsp
             {
                 TspForm tspform = new TspForm();
 
-                if (tspform.use_xml_or_kml == true)
+                if (TspForm.use_xml_or_kml == true)
                 {
                     this.Clear();
 

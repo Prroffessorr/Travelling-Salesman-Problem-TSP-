@@ -82,7 +82,7 @@ namespace Tsp
         /// <summary>
         /// Check what we use xml or kml
         /// </summary>
-        public bool use_xml_or_kml;
+        public static bool use_xml_or_kml=true;
         /// <summary>
         /// Variables for storing integer coordinates.
         /// </summary>
@@ -98,7 +98,10 @@ namespace Tsp
         /// </summary>
         Font drawFont = new Font("Arial", 8);
         SolidBrush drawBrush = new SolidBrush(Color.Black);
-
+        /// <summary>
+        /// Get iteration from label in form
+        /// </summary>
+        public static int iteration = 0;
         /// <summary>
         /// Delegate for the thread that runs the TSP algorithm.
         /// We use a separate thread so the GUI can redraw as the algorithm runs.
@@ -147,8 +150,9 @@ namespace Tsp
         /// <param name="e">Event arguments.</param>
         public void DrawTour(object sender, TspEventArgs e)
         {
-            this.lastFitnessValue.Text = Math.Round(e.BestTour.Fitness, 2).ToString(CultureInfo.CurrentCulture);
-            this.lastIterationValue.Text = e.Generation.ToString(CultureInfo.CurrentCulture);
+            lastFitnessValue.Text = Math.Round(e.BestTour.Fitness, 2).ToString(CultureInfo.CurrentCulture);
+            lastIterationValue.Text = e.Generation.ToString(CultureInfo.CurrentCulture);
+           
 
             if (cityImage == null)
             {
@@ -165,6 +169,7 @@ namespace Tsp
             cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
             {
+                iteration = e.Generation;
                 // Draw a circle for the city.
                 cityGraphics.DrawString(city_num.ToString(), drawFont, drawBrush, city.Location.X + 3, city.Location.Y + 3);
                 cityGraphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
@@ -322,16 +327,17 @@ namespace Tsp
             int populationSize = Convert.ToInt32(populationSizeTextBox.Text, CultureInfo.CurrentCulture);
             int maxGenerations = Convert.ToInt32(maxGenerationTextBox.Text, CultureInfo.CurrentCulture); ;
             int mutation = Convert.ToInt32(mutationTextBox.Text, CultureInfo.CurrentCulture);
+            int iterationForConverge = Convert.ToInt32(iterationForConvergeTextBox.Text, CultureInfo.CurrentCulture);
             int groupSize = Convert.ToInt32(groupSizeTextBox.Text, CultureInfo.CurrentCulture);
             int seed = Convert.ToInt32(randomSeedTextBox.Text, CultureInfo.CurrentCulture);
             int numberOfCloseCities = Convert.ToInt32(NumberCloseCitiesTextBox.Text, CultureInfo.CurrentCulture);
             int chanceUseCloseCity = Convert.ToInt32(CloseCityOddsTextBox.Text, CultureInfo.CurrentCulture);
-
+            
             cityList.CalculateCityDistances(numberOfCloseCities);
 
             tsp = new Tsp();
             tsp.foundNewBestTour += new Tsp.NewBestTourEventHandler(tsp_foundNewBestTour);
-            tsp.Begin(populationSize, maxGenerations, groupSize, mutation, seed, chanceUseCloseCity, cityList);
+            tsp.Begin(populationSize, maxGenerations, groupSize, mutation, iterationForConverge, seed, chanceUseCloseCity, cityList);
             tsp.foundNewBestTour -= new Tsp.NewBestTourEventHandler(tsp_foundNewBestTour);
             tsp = null;
         }
