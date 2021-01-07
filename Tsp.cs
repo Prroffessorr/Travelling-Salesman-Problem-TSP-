@@ -110,9 +110,9 @@ namespace Tsp
 
             for (generation = 0; generation < maxGenerations; generation++)
             {
-                if (TspForm.itteration >= maxGenerations/100)
+                if (TspForm.iteration >= maxGenerations/100)
                 {
-                    double stop_work = TspForm.itteration - generation/1.4;
+                    double stop_work = TspForm.iteration - generation/1.4;
 
                     if (stop_work <= 0)
                     {
@@ -122,7 +122,7 @@ namespace Tsp
                
                 if (ItterForStop == 9)
                 {
-                    Halt = true;
+                    Halt = true;//Break the algorithm if we found the best tour
                 }
 
                 if (Halt)
