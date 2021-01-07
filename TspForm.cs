@@ -327,16 +327,17 @@ namespace Tsp
             int populationSize = Convert.ToInt32(populationSizeTextBox.Text, CultureInfo.CurrentCulture);
             int maxGenerations = Convert.ToInt32(maxGenerationTextBox.Text, CultureInfo.CurrentCulture); ;
             int mutation = Convert.ToInt32(mutationTextBox.Text, CultureInfo.CurrentCulture);
+            int iterationForConverge = Convert.ToInt32(iterationForConvergeTextBox.Text, CultureInfo.CurrentCulture);
             int groupSize = Convert.ToInt32(groupSizeTextBox.Text, CultureInfo.CurrentCulture);
             int seed = Convert.ToInt32(randomSeedTextBox.Text, CultureInfo.CurrentCulture);
             int numberOfCloseCities = Convert.ToInt32(NumberCloseCitiesTextBox.Text, CultureInfo.CurrentCulture);
             int chanceUseCloseCity = Convert.ToInt32(CloseCityOddsTextBox.Text, CultureInfo.CurrentCulture);
-
+            
             cityList.CalculateCityDistances(numberOfCloseCities);
 
             tsp = new Tsp();
             tsp.foundNewBestTour += new Tsp.NewBestTourEventHandler(tsp_foundNewBestTour);
-            tsp.Begin(populationSize, maxGenerations, groupSize, mutation, seed, chanceUseCloseCity, cityList);
+            tsp.Begin(populationSize, maxGenerations, groupSize, mutation, iterationForConverge, seed, chanceUseCloseCity, cityList);
             tsp.foundNewBestTour -= new Tsp.NewBestTourEventHandler(tsp_foundNewBestTour);
             tsp = null;
         }

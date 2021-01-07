@@ -88,10 +88,11 @@ namespace Tsp
         /// <param name="maxGenerations">Number of times to perform the crossover operation before stopping.</param>
         /// <param name="groupSize">Number of tours to examine in each generation. Top 2 are chosen as the parent tours whose children replace the worst 2 tours in the group.</param>
         /// <param name="mutation">Odds that a child tour will be mutated..</param>
+        /// <param name="iterationForConverge">Iteration for converge...</param>
         /// <param name="seed">Seed for the random number generator.</param>
         /// <param name="chanceToUseCloseCity">The odds (out of 100) that a city that is known to be close will be used in any given link.</param>
         /// <param name="cityList">List of cities in the tour.</param>
-        public void Begin(int populationSize, int maxGenerations, int groupSize, int mutation, int seed, int chanceToUseCloseCity, Cities cityList)
+        public void Begin(int populationSize, int maxGenerations, int groupSize, int mutation, int iterationForConverge, int seed, int chanceToUseCloseCity, Cities cityList)
         {
             rand = new Random(seed);
 
@@ -120,7 +121,7 @@ namespace Tsp
                     }
                 }
                
-                if (ItterForStop == 9)
+                if (ItterForStop == iterationForConverge)
                 {
                     Halt = true;//Break the algorithm if we found the best tour
                 }
