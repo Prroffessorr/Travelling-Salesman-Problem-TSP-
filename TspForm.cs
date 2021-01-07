@@ -91,7 +91,7 @@ namespace Tsp
         /// <summary>
         /// Variables for storing the fractional part of coordinates.
         /// </summary>
-        public List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
+        public static List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
 
         /// <summary>
         /// Parameters required for drawing numbers
@@ -202,6 +202,13 @@ namespace Tsp
 
             if (e.Complete)
             {
+                //If we use Kml file for find best way, we can create a kml file (sorry for the tautology)
+
+                if (Path.GetExtension(fileNameTextBox.Text) == ".kml")
+                {
+                    Create_kml.Enabled = true;
+                }
+
                 StartButton.Text = "Begin";
                 StatusLabel.Text = "Open a City List or click the map to place cities.";
                 StatusLabel.ForeColor = Color.Black;
@@ -471,6 +478,9 @@ namespace Tsp
 
                 string[] Second_town;
 
+                string longitude_x , latitude_y;
+
+
                 for (int j = 0; j < integer_cordinates.Count; j++)
                 {
                     First_town = integer_cordinates[j].x1_y1.Split(':');
@@ -479,21 +489,27 @@ namespace Tsp
                     Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
 
                     // Write next city to kml file
+                    for (int f = 0; f < fraction_cordinates.Count; f++)
+                    {
+                        //get longitude(x) 
+                        longitude_x = fraction_cordinates[f].fraction_x;
+                        latitude_y = fraction_cordinates[f].fraction_y;
 
-                    xmlWriter.WriteStartElement("Placemark");
-                    xmlWriter.WriteStartElement("Point");
-                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndElement();
+                        xmlWriter.WriteStartElement("Placemark");
+                        xmlWriter.WriteStartElement("Point");
+                        xmlWriter.WriteElementString("coordinates", First_town[0] + "." + longitude_x + "," + First_town[1] + "." + latitude_y + ",0");
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
 
-                    // Write shortest tour betwen First and Second cities in loop
+                        // Write shortest tour betwen First and Second cities in loop
 
-                    xmlWriter.WriteStartElement("Placemark");
-                    xmlWriter.WriteStartElement("LineString");
-                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0" + "\n" +
-                                                 Second_town[0] + "," + Second_town[1] + ",0");
-                    xmlWriter.WriteEndElement();
-                    xmlWriter.WriteEndElement();
+                        xmlWriter.WriteStartElement("Placemark");
+                        xmlWriter.WriteStartElement("LineString");
+                        xmlWriter.WriteElementString("coordinates", First_town[0] + "." + longitude_x + "," + First_town[1] + "." + latitude_y + ",0" + "\n" +
+                                                     Second_town[0] + "." + longitude_x + "," + Second_town[1] + "." + latitude_y + ",0");
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                    }
                     
                 }
 
