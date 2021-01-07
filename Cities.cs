@@ -29,8 +29,9 @@ namespace Tsp
         /// <summary>
         /// Finding latitude and longitude to work with kml files
         /// </summary>
-        static string[] split_cordinates_longitude = null;
-        static string[] split_cordinates_latitude = null;
+        static string[] split_cordinates_all = null;
+        static string[] split_cordinates_x = null;
+        static string[] split_cordinates_y = null;
 
         /// <summary>
         /// Determine the distances between each city.
@@ -103,40 +104,44 @@ namespace Tsp
                     {
                         foreach (XmlNode Second_child in First_child.ChildNodes)
                         {
-                            if (Second_child.Name == "Placemark")
+                            if (Second_child.Name == "Folder") 
                             {
                                 foreach (XmlNode Thrid_child in Second_child.ChildNodes)
                                 {
-                                    if (Thrid_child.Name == "LookAt")
+                                    if (Thrid_child.Name == "Placemark") 
                                     {
                                         foreach (XmlNode Fourth_child in Thrid_child.ChildNodes)
                                         {
-                                            //Get longitude(X) from kml
-                                            if (Fourth_child.Name == "longitude")//X
+                                            if (Fourth_child.Name == "Point")
                                             {
-                                                split_cordinates_longitude = Fourth_child.InnerText.Split('.');
-                                                Console.WriteLine(split_cordinates_longitude[1]);
-                                            }
-                                            //Get latitude(Y) from kml
-                                            else if (Fourth_child.Name == "latitude")//Y
-                                            {
-                                                split_cordinates_latitude = Fourth_child.InnerText.Split('.');
-                                                Console.WriteLine(split_cordinates_latitude[1]);
-                                            }
+                                                foreach (XmlNode Fifth_child in Fourth_child.ChildNodes)
+                                                {
+                                                    //Get the cordinates like 31.28600940737578,51.50013904238215,0  
+                                                    if (Fifth_child.Name == "coordinates")//X and Y  
+                                                    {
+                                                        //Split and get 31.28600940737578
+                                                        split_cordinates_all = Fifth_child.InnerText.Split(',');
+                                                        //Now we get 31 and
+                                                        split_cordinates_x = split_cordinates_all[0].Split('.');
+                                                        // 28600940737578
+                                                        split_cordinates_y = split_cordinates_all[1].Split('.');
 
+                                                        //Console.WriteLine(split_cordinates_x[0] + "." + split_cordinates_x[1] +
+                                                            //"," + split_cordinates_y[0] + "." + split_cordinates_y[1]);
+                                                    }
+                                                }
+                                                // Add to the city list integer cordinates
+                                                this.Add(new City(Convert.ToInt32(split_cordinates_x[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_y[0], CultureInfo.CurrentCulture)));
+
+                                                // Add to the city list fraction cordinates
+                                                TspForm.fraction_cordinates.Add(new TspForm.Fraction_Cordinates()
+                                                {
+                                                    fraction_x = split_cordinates_x[1],
+
+                                                    fraction_y = split_cordinates_y[1]
+                                                });
+                                            }
                                         }
-
-                                        // Add to the city list integer cordinates
-                                        this.Add(new City(Convert.ToInt32(split_cordinates_longitude[0], CultureInfo.CurrentCulture), Convert.ToInt32(split_cordinates_latitude[0], CultureInfo.CurrentCulture)));
-
-                                        // Add to the city list fraction cordinates
-                                        tspform.fraction_cordinates.Add(new TspForm.Fraction_Cordinates()
-                                        {
-                                            fraction_x = split_cordinates_longitude[1],
-
-                                            fraction_y = split_cordinates_latitude[1]
-                                        });
-
                                     }
                                 }
                             }
