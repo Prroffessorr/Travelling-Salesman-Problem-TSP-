@@ -152,7 +152,7 @@ namespace Tsp
         {
             lastFitnessValue.Text = Math.Round(e.BestTour.Fitness, 2).ToString(CultureInfo.CurrentCulture);
             lastIterationValue.Text = e.Generation.ToString(CultureInfo.CurrentCulture);
-           
+            iteration = Convert.ToInt32(lastIterationValue.Text);
 
             if (cityImage == null)
             {
@@ -169,7 +169,6 @@ namespace Tsp
             cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
             {
-                iteration = e.Generation;
                 // Draw a circle for the city.
                 cityGraphics.DrawString(city_num.ToString(), drawFont, drawBrush, city.Location.X + 3, city.Location.Y + 3);
                 cityGraphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);

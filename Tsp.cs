@@ -108,23 +108,35 @@ namespace Tsp
             TspForm tspform = new TspForm();
 
             int ItterForStop = 0;
+            int Waiter = 0;
 
             for (generation = 0; generation < maxGenerations; generation++)
             {
-                if (TspForm.iteration >= maxGenerations/100)
-                {
-                    double stop_work = TspForm.iteration - generation/1.4;
+                Waiter += 1;
 
-                    if (stop_work <= 0)
+                if (Waiter >= 100)
+                {
+                    if (TspForm.iteration == 0 || generation >= 50 && generation <= maxGenerations/1000 )
                     {
-                        ItterForStop += 1;
+                        TspForm.iteration = generation;
+                    }
+
+                    if (TspForm.iteration != generation)
+                    {
+                        double stop_work = TspForm.iteration - generation / 1.4;
+
+                        if (stop_work <= 0)
+                        {
+                            ItterForStop += 1;
+                        }
+                    }
+
+                    if (ItterForStop == iterationForConverge)
+                    {
+                        Halt = true;//Break the algorithm if we found the best tour
                     }
                 }
-               
-                if (ItterForStop == iterationForConverge)
-                {
-                    Halt = true;//Break the algorithm if we found the best tour
-                }
+                
 
                 if (Halt)
                 {
