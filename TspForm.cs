@@ -56,9 +56,17 @@ namespace Tsp
         /// </summary>
         class Cordinates {
             /// <summary>
+            /// Get num of last city
+            /// </summary>
+            public int last_city_num { get; set; }
+            /// <summary>
             /// integer cordinates for x
             /// </summary>
             public string x1_y1 { get; set; }
+            /// <summary>
+            /// Get num of next city
+            /// </summary>
+            public int next_city_num { get; set; }
             /// <summary>
             /// integer cordinates for y
             /// </summary>
@@ -91,7 +99,7 @@ namespace Tsp
         /// <summary>
         /// Variables for storing the fractional part of coordinates.
         /// </summary>
-        public List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
+        public static List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
 
         /// <summary>
         /// Parameters required for drawing numbers
@@ -180,7 +188,9 @@ namespace Tsp
 
                 integer_cordinates.Add(new Cordinates()
                 {
+                    last_city_num = lastCity,
                     x1_y1 = cityList[lastCity].Location.X + ":" + cityList[lastCity].Location.Y,
+                    next_city_num = nextCity,
                     x2_y2 = cityList[nextCity].Location.X + ":" + cityList[nextCity].Location.Y
                 });
 
@@ -202,6 +212,13 @@ namespace Tsp
 
             if (e.Complete)
             {
+                //If we use Kml file for find best way, we can create a kml file (sorry for the tautology)
+
+                if (Path.GetExtension(fileNameTextBox.Text) == ".kml")
+                {
+                    Create_kml.Enabled = true;
+                }
+
                 StartButton.Text = "Begin";
                 StatusLabel.Text = "Open a City List or click the map to place cities.";
                 StatusLabel.ForeColor = Color.Black;
@@ -467,22 +484,25 @@ namespace Tsp
 
                 xmlWriter.WriteElementString("name", Path.GetFileName(Save_kml_file.FileName));
 
-                string[] First_town;
+                string[] First_town, Second_town;
 
-                string[] Second_town;
+                int Last_city = 0, Next_city = 0; ;
 
                 for (int j = 0; j < integer_cordinates.Count; j++)
                 {
+                    //Get num of city
+                    Last_city = integer_cordinates[j].last_city_num;
+                    Next_city = integer_cordinates[j].next_city_num;
+
+                    //Get cordinates of city
                     First_town = integer_cordinates[j].x1_y1.Split(':');
                     Second_town = integer_cordinates[j].x2_y2.Split(':');
 
-                    Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
-
-                    // Write next city to kml file
+                    //Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
 
                     xmlWriter.WriteStartElement("Placemark");
                     xmlWriter.WriteStartElement("Point");
-                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x + "," + First_town[1] + "." + fraction_cordinates[Last_city].fraction_y + ",0");
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndElement();
 
@@ -490,13 +510,12 @@ namespace Tsp
 
                     xmlWriter.WriteStartElement("Placemark");
                     xmlWriter.WriteStartElement("LineString");
-                    xmlWriter.WriteElementString("coordinates", First_town[0] + "," + First_town[1] + ",0" + "\n" +
-                                                 Second_town[0] + "," + Second_town[1] + ",0");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x + "," + First_town[1] + "." + fraction_cordinates[Last_city].fraction_y + ",0" + "\n" +
+                                                 Second_town[0] + "." + fraction_cordinates[Next_city].fraction_x + "," + Second_town[1] + "." + fraction_cordinates[Next_city].fraction_y + ",0");
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndElement();
-                    
                 }
-
+                    
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.Close();
