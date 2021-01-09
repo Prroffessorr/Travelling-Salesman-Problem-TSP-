@@ -116,7 +116,7 @@ namespace Tsp
 
                 if (Waiter >= 100)
                 {
-                    if (TspForm.iteration == 0 || generation >= 50 && generation <= maxGenerations/1000 )
+                    if (TspForm.iteration == 0 || generation >= 50 && generation <= maxGenerations/100 )
                     {
                         TspForm.iteration = generation;
                     }
