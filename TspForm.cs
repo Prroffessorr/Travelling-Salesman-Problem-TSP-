@@ -478,7 +478,10 @@ namespace Tsp
                 XmlTextWriter xmlWriter = new XmlTextWriter(Save_kml_file.FileName, System.Text.Encoding.UTF8);
                 xmlWriter.Formatting = Formatting.Indented;
                 xmlWriter.WriteStartDocument();
-                xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2");
+                xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2 ");
+                xmlWriter.WriteAttributeString("xmlns:gx", "http://www.google.com/kml/ext/2.2");
+                xmlWriter.WriteAttributeString("xmlns:kml", "http://www.opengis.net/kml/2.2");
+                xmlWriter.WriteAttributeString("xmlns:atom", "http://www.w3.org/2005/Atom");
 
                 xmlWriter.WriteStartElement("Document");
 
@@ -498,9 +501,10 @@ namespace Tsp
                     First_town = integer_cordinates[j].x1_y1.Split(':');
                     Second_town = integer_cordinates[j].x2_y2.Split(':');
 
-                    //Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
+                    Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
 
                     xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteElementString("name", "City: " + Last_city);
                     xmlWriter.WriteStartElement("Point");
                     xmlWriter.WriteElementString("coordinates", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x + "," + First_town[1] + "." + fraction_cordinates[Last_city].fraction_y + ",0");
                     xmlWriter.WriteEndElement();
@@ -509,13 +513,108 @@ namespace Tsp
                     // Write shortest tour betwen First and Second cities in loop
 
                     xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteElementString("name", "Tour from: " + Last_city  + " to " + Next_city);
                     xmlWriter.WriteStartElement("LineString");
                     xmlWriter.WriteElementString("coordinates", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x + "," + First_town[1] + "." + fraction_cordinates[Last_city].fraction_y + ",0" + "\n" +
                                                  Second_town[0] + "." + fraction_cordinates[Next_city].fraction_x + "," + Second_town[1] + "." + fraction_cordinates[Next_city].fraction_y + ",0");
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndElement();
                 }
-                    
+
+                //Create the animation tour
+                xmlWriter.WriteStartElement("Placemark");
+
+                xmlWriter.WriteStartElement("Model");
+                xmlWriter.WriteElementString("gx:altitudeMode", "absolute");
+                xmlWriter.WriteStartElement("Location");
+                xmlWriter.WriteAttributeString("id", "planeLocation");
+
+                xmlWriter.WriteElementString("longitude", integer_cordinates[0].x1_y1.Split(':')[0] + "." + fraction_cordinates[integer_cordinates[0].last_city_num].fraction_x);
+                xmlWriter.WriteElementString("latitude", integer_cordinates[0].x1_y1.Split(':')[1] + "." + fraction_cordinates[integer_cordinates[0].last_city_num].fraction_y);
+                xmlWriter.WriteElementString("altitude", "10000");
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("Scale");
+                xmlWriter.WriteElementString("x", "850");
+                xmlWriter.WriteElementString("y", "850");
+                xmlWriter.WriteElementString("z", "850");
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("Link");
+                xmlWriter.WriteElementString("href", "Tsp/eyeball.dae");
+                xmlWriter.WriteEndElement();
+
+                
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("gx:Tour");
+                xmlWriter.WriteElementString("name", "Play me!");
+                xmlWriter.WriteStartElement("gx:Playlist");
+
+                for (int j = 0; j < integer_cordinates.Count; j++)
+                {
+                    //Get num of city
+                    Last_city = integer_cordinates[j].last_city_num;
+                    Next_city = integer_cordinates[j].next_city_num;
+
+                    //Get cordinates of city
+                    First_town = integer_cordinates[j].x1_y1.Split(':');
+                    Second_town = integer_cordinates[j].x2_y2.Split(':');
+
+                    if (j==0)
+                    {
+                        xmlWriter.WriteStartElement("gx:FlyTo");
+                        xmlWriter.WriteElementString("gx:duration", "2.5");
+                        xmlWriter.WriteStartElement("Camera");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude",  First_town[1] + "." + fraction_cordinates[Last_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "100000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                    }
+                    if (j >= 1) {
+
+                        //AnimatedUpdate
+                        xmlWriter.WriteStartElement("gx:AnimatedUpdate");
+                        xmlWriter.WriteElementString("gx:duration", "60");
+                        xmlWriter.WriteStartElement("Update");
+
+                        xmlWriter.WriteStartElement("Change");
+                        xmlWriter.WriteStartElement("Location");
+                        xmlWriter.WriteAttributeString("targetId", "planeLocation");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude", First_town[1] + "." + fraction_cordinates[Last_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "10000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+
+                        // FlyTo
+                        xmlWriter.WriteStartElement("gx:FlyTo");
+                        xmlWriter.WriteElementString("gx:duration", "60");
+                        xmlWriter.WriteElementString("gx:flyToMode", "smooth");
+                        xmlWriter.WriteStartElement("Camera");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude", First_town[1] + "." + fraction_cordinates[Last_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "100000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
+
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.Close();
