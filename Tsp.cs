@@ -1,7 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // File Name: Tsp.cs
-//      Date: 06/01/2006
-// Copyright (c) 2006 Michael LaLena. All rights reserved.  (www.lalena.com)
 // Permission to use, copy, modify, and distribute this Program and its documentation,
 //  if any, for any purpose and without fee is hereby granted, provided that:
 //   (i) you not charge any fee for the Program, and the Program not be incorporated
@@ -116,7 +114,7 @@ namespace Tsp
 
                 if (Waiter >= 100)
                 {
-                    if (TspForm.iteration == 0 || generation >= 50 && generation <= maxGenerations/1000 )
+                    if (TspForm.iteration == 0 || generation >= 50 && generation <= maxGenerations/100 )
                     {
                         TspForm.iteration = generation;
                     }
