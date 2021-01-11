@@ -2,17 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("tsp")]
-[assembly: AssemblyDescription("Solution to the Travelling Salesman Problem")]
-[assembly: AssemblyConfiguration("Michael LaLena")]
-[assembly: AssemblyCompany("Michael LaLena")]
-[assembly: AssemblyProduct("tsp")]
-[assembly: AssemblyCopyright("Copyright (c) 2006 Michael LaLena. All rights reserved.")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
