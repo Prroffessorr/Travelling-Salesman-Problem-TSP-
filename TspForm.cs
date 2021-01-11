@@ -1,7 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // File Name: TspForm.cs
-//      Date: 06/01/2006
-// Copyright (c) 2006 Michael LaLena. All rights reserved.  (www.lalena.com)
 // Permission to use, copy, modify, and distribute this Program and its documentation,
 //  if any, for any purpose and without fee is hereby granted, provided that:
 //   (i) you not charge any fee for the Program, and the Program not be incorporated
