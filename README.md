@@ -3,11 +3,11 @@ Solving the traveling salesman problem with the ability to handle kml files and 
 
 ## Usage
 
-## An example of the program (displaying the shortest path in Google Earth)
+### An example of the program (displaying the shortest path in Google Earth)
 
 ![Result in Google Earth](https://github.com/Prroffessorr/Travelling-Salesman-Problem-TSP-/blob/master/Properties/1.png)
 
-## Passage of a real tour in real time
+### Passage of a real tour in real time
 
 ![Real tour Google Earth](https://github.com/Prroffessorr/Travelling-Salesman-Problem-TSP-/blob/master/Properties/2.png)
 
