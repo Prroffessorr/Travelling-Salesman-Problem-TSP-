@@ -1,7 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // File Name: Tsp.cs
-//      Date: 06/01/2006
-// Copyright (c) 2006 Michael LaLena. All rights reserved.  (www.lalena.com)
 // Permission to use, copy, modify, and distribute this Program and its documentation,
 //  if any, for any purpose and without fee is hereby granted, provided that:
 //   (i) you not charge any fee for the Program, and the Program not be incorporated
@@ -54,6 +52,7 @@ namespace Tsp
         /// </summary>
         Population population;
 
+        public static int generation;
         /// <summary>
         /// Private copy of a flag that will stop the TSP from calculating any more generations.
         /// </summary>
@@ -72,7 +71,6 @@ namespace Tsp
                 halt = value;
             }
         }
-
         /// <summary>
         /// Default Constructor
         /// </summary>
@@ -88,10 +86,11 @@ namespace Tsp
         /// <param name="maxGenerations">Number of times to perform the crossover operation before stopping.</param>
         /// <param name="groupSize">Number of tours to examine in each generation. Top 2 are chosen as the parent tours whose children replace the worst 2 tours in the group.</param>
         /// <param name="mutation">Odds that a child tour will be mutated..</param>
+        /// <param name="iterationForConverge">Iteration for converge...</param>
         /// <param name="seed">Seed for the random number generator.</param>
         /// <param name="chanceToUseCloseCity">The odds (out of 100) that a city that is known to be close will be used in any given link.</param>
         /// <param name="cityList">List of cities in the tour.</param>
-        public void Begin(int populationSize, int maxGenerations, int groupSize, int mutation, int seed, int chanceToUseCloseCity, Cities cityList)
+        public void Begin(int populationSize, int maxGenerations, int groupSize, int mutation, int iterationForConverge, int seed, int chanceToUseCloseCity, Cities cityList)
         {
             rand = new Random(seed);
 
@@ -103,9 +102,40 @@ namespace Tsp
             displayTour(population.BestTour, 0, false);
 
             bool foundNewBestTour = false;
-            int generation;
+
+            TspForm tspform = new TspForm();
+
+            int ItterForStop = 0;
+            int Waiter = 0;
+
             for (generation = 0; generation < maxGenerations; generation++)
             {
+                Waiter += 1;
+
+                if (Waiter >= 100)
+                {
+                    if (TspForm.iteration == 0 || generation >= 50 && generation <= maxGenerations/100 )
+                    {
+                        TspForm.iteration = generation;
+                    }
+
+                    if (TspForm.iteration != generation)
+                    {
+                        double stop_work = TspForm.iteration - generation / 1.4;
+
+                        if (stop_work <= 0)
+                        {
+                            ItterForStop += 1;
+                        }
+                    }
+
+                    if (ItterForStop == iterationForConverge)
+                    {
+                        Halt = true;//Break the algorithm if we found the best tour
+                    }
+                }
+                
+
                 if (Halt)
                 {
                     break;  // GUI has requested we exit.

@@ -1,7 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // File Name: TspForm.cs
-//      Date: 06/01/2006
-// Copyright (c) 2006 Michael LaLena. All rights reserved.  (www.lalena.com)
 // Permission to use, copy, modify, and distribute this Program and its documentation,
 //  if any, for any purpose and without fee is hereby granted, provided that:
 //   (i) you not charge any fee for the Program, and the Program not be incorporated
@@ -21,6 +19,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using System.Globalization;
+using System.Xml;
 
 namespace Tsp
 {
@@ -50,6 +49,65 @@ namespace Tsp
         /// </summary>
         Graphics cityGraphics;
 
+        /// <summary>
+        /// Variables for storing integer coordinates.
+        /// </summary>
+        class Cordinates {
+            /// <summary>
+            /// Get num of last city
+            /// </summary>
+            public int last_city_num { get; set; }
+            /// <summary>
+            /// integer cordinates for x
+            /// </summary>
+            public string x1_y1 { get; set; }
+            /// <summary>
+            /// Get num of next city
+            /// </summary>
+            public int next_city_num { get; set; }
+            /// <summary>
+            /// integer cordinates for y
+            /// </summary>
+            public string x2_y2 { get; set; }
+        }
+
+        /// <summary>
+        /// Variables for storing fraction coordinates(using if we work with kml file).
+        /// </summary>
+        public class Fraction_Cordinates
+        {
+            /// <summary>
+            /// fraction cordinates for x
+            /// </summary>
+            public string fraction_x { get; set; }
+            /// <summary>
+            /// fraction cordinates for y
+            /// </summary>
+            public string fraction_y { get; set; }
+        }
+        /// <summary>
+        /// Check what we use xml or kml
+        /// </summary>
+        public static bool use_xml_or_kml=true;
+        /// <summary>
+        /// Variables for storing integer coordinates.
+        /// </summary>
+        List<Cordinates> integer_cordinates = new List<Cordinates>();
+
+        /// <summary>
+        /// Variables for storing the fractional part of coordinates.
+        /// </summary>
+        public static List<Fraction_Cordinates> fraction_cordinates = new List<Fraction_Cordinates>();
+
+        /// <summary>
+        /// Parameters required for drawing numbers
+        /// </summary>
+        Font drawFont = new Font("Arial", 8);
+        SolidBrush drawBrush = new SolidBrush(Color.Black);
+        /// <summary>
+        /// Get iteration from label in form
+        /// </summary>
+        public static int iteration = 0;
         /// <summary>
         /// Delegate for the thread that runs the TSP algorithm.
         /// We use a separate thread so the GUI can redraw as the algorithm runs.
@@ -98,8 +156,9 @@ namespace Tsp
         /// <param name="e">Event arguments.</param>
         public void DrawTour(object sender, TspEventArgs e)
         {
-            this.lastFitnessValue.Text = Math.Round(e.BestTour.Fitness, 2).ToString(CultureInfo.CurrentCulture);
-            this.lastIterationValue.Text = e.Generation.ToString(CultureInfo.CurrentCulture);
+            lastFitnessValue.Text = Math.Round(e.BestTour.Fitness, 2).ToString(CultureInfo.CurrentCulture);
+            lastIterationValue.Text = e.Generation.ToString(CultureInfo.CurrentCulture);
+            iteration = Convert.ToInt32(lastIterationValue.Text);
 
             if (cityImage == null)
             {
@@ -109,15 +168,29 @@ namespace Tsp
 
             int lastCity = 0;
             int nextCity = e.BestTour[0].Connection1;
+            int city_num = 1;
 
-            cityGraphics.FillRectangle(Brushes.White, 0, 0, cityImage.Width, cityImage.Height);
+            integer_cordinates.Clear();
+
+            cityGraphics.FillRectangle(Brushes.Silver, 0, 0, cityImage.Width, cityImage.Height);
             foreach( City city in e.CityList )
             {
                 // Draw a circle for the city.
+                cityGraphics.DrawString(city_num.ToString(), drawFont, drawBrush, city.Location.X + 3, city.Location.Y + 3);
                 cityGraphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
 
                 // Draw the line connecting the city.
                 cityGraphics.DrawLine(Pens.Black, cityList[lastCity].Location, cityList[nextCity].Location);
+
+                // Get Cordinates
+
+                integer_cordinates.Add(new Cordinates()
+                {
+                    last_city_num = lastCity,
+                    x1_y1 = cityList[lastCity].Location.X + ":" + cityList[lastCity].Location.Y,
+                    next_city_num = nextCity,
+                    x2_y2 = cityList[nextCity].Location.X + ":" + cityList[nextCity].Location.Y
+                });
 
                 // figure out if the next city in the list is [0] or [1]
                 if (lastCity != e.BestTour[nextCity].Connection1)
@@ -130,12 +203,20 @@ namespace Tsp
                     lastCity = nextCity;
                     nextCity = e.BestTour[nextCity].Connection2;
                 }
+                city_num += 1;
             }
 
             this.tourDiagram.Image = cityImage;
 
             if (e.Complete)
             {
+                //If we use Kml file for find best way, we can create a kml file (sorry for the tautology)
+
+                if (Path.GetExtension(fileNameTextBox.Text) == ".kml")
+                {
+                    Create_kml.Enabled = true;
+                }
+
                 StartButton.Text = "Begin";
                 StatusLabel.Text = "Open a City List or click the map to place cities.";
                 StatusLabel.ForeColor = Color.Black;
@@ -151,10 +232,14 @@ namespace Tsp
             Image cityImage = new Bitmap(tourDiagram.Width, tourDiagram.Height);
             Graphics graphics = Graphics.FromImage(cityImage);
 
+            int City_num = 1;
             foreach (City city in cityList)
             {
                 // Draw a circle for the city.
+                
+                graphics.DrawString(City_num.ToString(), drawFont, drawBrush, city.Location.X+3, city.Location.Y+3);
                 graphics.DrawEllipse(Pens.Black, city.Location.X - 2, city.Location.Y - 2, 5, 5);
+                City_num += 1;
             }
 
             this.tourDiagram.Image = cityImage;
@@ -256,16 +341,17 @@ namespace Tsp
             int populationSize = Convert.ToInt32(populationSizeTextBox.Text, CultureInfo.CurrentCulture);
             int maxGenerations = Convert.ToInt32(maxGenerationTextBox.Text, CultureInfo.CurrentCulture); ;
             int mutation = Convert.ToInt32(mutationTextBox.Text, CultureInfo.CurrentCulture);
+            int iterationForConverge = Convert.ToInt32(iterationForConvergeTextBox.Text, CultureInfo.CurrentCulture);
             int groupSize = Convert.ToInt32(groupSizeTextBox.Text, CultureInfo.CurrentCulture);
             int seed = Convert.ToInt32(randomSeedTextBox.Text, CultureInfo.CurrentCulture);
             int numberOfCloseCities = Convert.ToInt32(NumberCloseCitiesTextBox.Text, CultureInfo.CurrentCulture);
             int chanceUseCloseCity = Convert.ToInt32(CloseCityOddsTextBox.Text, CultureInfo.CurrentCulture);
-
+            
             cityList.CalculateCityDistances(numberOfCloseCities);
 
             tsp = new Tsp();
             tsp.foundNewBestTour += new Tsp.NewBestTourEventHandler(tsp_foundNewBestTour);
-            tsp.Begin(populationSize, maxGenerations, groupSize, mutation, seed, chanceUseCloseCity, cityList);
+            tsp.Begin(populationSize, maxGenerations, groupSize, mutation, iterationForConverge, seed, chanceUseCloseCity, cityList);
             tsp.foundNewBestTour -= new Tsp.NewBestTourEventHandler(tsp_foundNewBestTour);
             tsp = null;
         }
@@ -279,7 +365,17 @@ namespace Tsp
         private void selectFileButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileOpenDialog = new OpenFileDialog();
-            fileOpenDialog.Filter = "XML(*.xml)|*.xml";
+
+            if (CheckBox_XML_KML.Checked == true)
+            {
+                use_xml_or_kml = true;
+                fileOpenDialog.Filter = "XML(*.xml)|*.xml";
+            }
+            else
+            {
+                use_xml_or_kml = false;
+                fileOpenDialog.Filter = "KML(*.kml)|*.kml";
+            }
             fileOpenDialog.InitialDirectory = ".";
             fileOpenDialog.ShowDialog();
             fileNameTextBox.Text = fileOpenDialog.FileName;
@@ -364,6 +460,202 @@ namespace Tsp
         private void updateCityCount()
         {
             this.NumberCitiesValue.Text = cityList.Count.ToString();
+        }
+
+        /// <summary>
+        /// Create .kml file
+        /// </summary>
+       
+        private void Create_kml_Click(object sender, EventArgs e)
+        {
+            Save_kml_file.FileName = "Best Tour for " + integer_cordinates.Count + " Cities";
+
+            if (Save_kml_file.ShowDialog() == DialogResult.OK)
+            {
+
+                XmlTextWriter xmlWriter = new XmlTextWriter(Save_kml_file.FileName, System.Text.Encoding.UTF8);
+                xmlWriter.Formatting = Formatting.Indented;
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("kml", "http://www.opengis.net/kml/2.2 ");
+                xmlWriter.WriteAttributeString("xmlns:gx", "http://www.google.com/kml/ext/2.2");
+                xmlWriter.WriteAttributeString("xmlns:kml", "http://www.opengis.net/kml/2.2");
+                xmlWriter.WriteAttributeString("xmlns:atom", "http://www.w3.org/2005/Atom");
+
+                xmlWriter.WriteStartElement("Document");
+
+                xmlWriter.WriteElementString("name", Path.GetFileName(Save_kml_file.FileName));
+
+                string[] First_town, Second_town;
+
+                int Last_city = 0, Next_city = 0; ;
+
+                for (int j = 0; j < integer_cordinates.Count; j++)
+                {
+                    //Get num of city
+                    Last_city = integer_cordinates[j].last_city_num;
+                    Next_city = integer_cordinates[j].next_city_num;
+
+                    //Get cordinates of city
+                    First_town = integer_cordinates[j].x1_y1.Split(':');
+                    Second_town = integer_cordinates[j].x2_y2.Split(':');
+
+                    Console.WriteLine(First_town[0] + "," + First_town[1] + " ; " + Second_town[0] + "," + Second_town[1]);
+
+                    xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteElementString("name", "City: " + Last_city);
+                    xmlWriter.WriteStartElement("Point");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x + "," + First_town[1] + "." + fraction_cordinates[Last_city].fraction_y + ",0");
+                    xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+
+                    // Write shortest tour betwen First and Second cities in loop
+
+                    xmlWriter.WriteStartElement("Placemark");
+                    xmlWriter.WriteElementString("name", "Tour from: " + Last_city  + " to " + Next_city);
+                    xmlWriter.WriteStartElement("LineString");
+                    xmlWriter.WriteElementString("coordinates", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x + "," + First_town[1] + "." + fraction_cordinates[Last_city].fraction_y + ",0" + "\n" +
+                                                 Second_town[0] + "." + fraction_cordinates[Next_city].fraction_x + "," + Second_town[1] + "." + fraction_cordinates[Next_city].fraction_y + ",0");
+                    xmlWriter.WriteEndElement();
+                    xmlWriter.WriteEndElement();
+                }
+
+                //Create the animation tour
+                xmlWriter.WriteStartElement("Placemark");
+
+                xmlWriter.WriteStartElement("Model");
+                xmlWriter.WriteElementString("gx:altitudeMode", "absolute");
+                xmlWriter.WriteStartElement("Location");
+                xmlWriter.WriteAttributeString("id", "planeLocation");
+
+                xmlWriter.WriteElementString("longitude", integer_cordinates[0].x1_y1.Split(':')[0] + "." + fraction_cordinates[integer_cordinates[0].last_city_num].fraction_x);
+                xmlWriter.WriteElementString("latitude", integer_cordinates[0].x1_y1.Split(':')[1] + "." + fraction_cordinates[integer_cordinates[0].last_city_num].fraction_y);
+                xmlWriter.WriteElementString("altitude", "10000");
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("Scale");
+                xmlWriter.WriteElementString("x", "850");
+                xmlWriter.WriteElementString("y", "850");
+                xmlWriter.WriteElementString("z", "850");
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("Link");
+                xmlWriter.WriteElementString("href", "Tsp/eyeball.dae");
+                xmlWriter.WriteEndElement();
+
+                
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("gx:Tour");
+                xmlWriter.WriteElementString("name", "Play me!");
+                xmlWriter.WriteStartElement("gx:Playlist");
+
+                //Start loop for creating animated tour
+
+                for (int j = 0; j < integer_cordinates.Count; j++)
+                {
+                    //Get num of city
+                    Last_city = integer_cordinates[j].last_city_num;
+                    Next_city = integer_cordinates[j].next_city_num;
+
+                    //Get cordinates of city
+                    First_town = integer_cordinates[j].x1_y1.Split(':');
+                    Second_town = integer_cordinates[j].x2_y2.Split(':');
+
+                    //Get first city for start loop of tour
+                    if (j==0)
+                    {
+                        xmlWriter.WriteStartElement("gx:FlyTo");
+                        xmlWriter.WriteElementString("gx:duration", "2.5");
+                        xmlWriter.WriteStartElement("Camera");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude",  First_town[1] + "." + fraction_cordinates[Last_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "100000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                    }
+
+                    //Get all city for tour loop
+                    if (j >= 1) {
+
+                        //AnimatedUpdate
+                        xmlWriter.WriteStartElement("gx:AnimatedUpdate");
+                        xmlWriter.WriteElementString("gx:duration", "60");
+                        xmlWriter.WriteStartElement("Update");
+
+                        xmlWriter.WriteStartElement("Change");
+                        xmlWriter.WriteStartElement("Location");
+                        xmlWriter.WriteAttributeString("targetId", "planeLocation");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude", First_town[1] + "." + fraction_cordinates[Last_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "10000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+
+                        // FlyTo
+                        xmlWriter.WriteStartElement("gx:FlyTo");
+                        xmlWriter.WriteElementString("gx:duration", "60");
+                        xmlWriter.WriteElementString("gx:flyToMode", "smooth");
+                        xmlWriter.WriteStartElement("Camera");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Last_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude", First_town[1] + "." + fraction_cordinates[Last_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "100000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+
+                    }
+                    //For end of loop tout (get first city)
+                    if (j == integer_cordinates.Count-1)
+                    {
+                        //AnimatedUpdate
+                        xmlWriter.WriteStartElement("gx:AnimatedUpdate");
+                        xmlWriter.WriteElementString("gx:duration", "60");
+                        xmlWriter.WriteStartElement("Update");
+
+                        xmlWriter.WriteStartElement("Change");
+                        xmlWriter.WriteStartElement("Location");
+                        xmlWriter.WriteAttributeString("targetId", "planeLocation");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Next_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude", First_town[1] + "." + fraction_cordinates[Next_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "10000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+
+                        // FlyTo
+                        xmlWriter.WriteStartElement("gx:FlyTo");
+                        xmlWriter.WriteElementString("gx:duration", "60");
+                        xmlWriter.WriteElementString("gx:flyToMode", "smooth");
+                        xmlWriter.WriteStartElement("Camera");
+
+                        xmlWriter.WriteElementString("longitude", First_town[0] + "." + fraction_cordinates[Next_city].fraction_x);
+                        xmlWriter.WriteElementString("latitude", First_town[1] + "." + fraction_cordinates[Next_city].fraction_y);
+                        xmlWriter.WriteElementString("altitude", "100000");
+
+                        xmlWriter.WriteEndElement();
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.Close();
+            }
         }
     }
 }
